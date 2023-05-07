@@ -1,20 +1,27 @@
 package net.jay.voxelgame;
 
-import org.lwjgl.*;
+import net.jay.voxelgame.render.Camera;
+import net.jay.voxelgame.render.ShaderProgram;
+import net.jay.voxelgame.render.Texture;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
+import org.lwjgl.system.MemoryStack;
 
-import java.nio.IntBuffer;
+import java.io.IOException;
+import java.nio.FloatBuffer;
 
-import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Game {
-    private static long window;
+    private static Window window;
+    private static Camera camera = new Camera();
 
     public static void start() {
         System.out.println("Starting...");
@@ -27,22 +34,83 @@ public class Game {
         // Don't remove
         GL.createCapabilities();
 
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        while(!glfwWindowShouldClose(window)) {
+        float[] vertices = {
+                0.5f,  0.5f, 0.0f, 1, 0,  // top right
+                0.5f, -0.5f, 0.0f, 1, 1,  // bottom right
+                -0.5f, -0.5f, 0.0f, 0, 1,  // bottom left
+                -0.5f,  0.5f, 0.0f, 0, 0  // top left
+        };
+        int[] indices = {
+                0, 1, 3,
+                1, 2, 3
+        };
+
+        int vao = glGenVertexArrays();
+        int vbo = glGenBuffers();
+        int ebo = glGenBuffers();
+        glBindVertexArray(vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * 4, 0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * 4, 3 * 4);
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        ShaderProgram shaderProgram = new ShaderProgram();
+        try {
+            shaderProgram.createVertexShader("shaders/shader.vert");
+            shaderProgram.createFragmentShader("shaders/shader.frag");
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+        shaderProgram.link();
+
+        Texture texture;
+        try {
+            texture = Texture.loadNewTexture("assets/dirt.png");
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        while(!window.shouldClose()) {
+            processKeyboard();
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            glfwSwapBuffers(window); // swap the color buffers
+            texture.bind();
+            shaderProgram.bind();
+            glBindVertexArray(vao);
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                FloatBuffer fb = new Matrix4f()
+                        .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
+                        .lookAt(camera.pos,
+                                new Vector3f(camera.pos).add(camera.front),
+                                camera.up)
+                        .get(stack.mallocFloat(16));
+                glUniformMatrix4fv(shaderProgram.getUniformLocation("projectionMatrix"), false, fb);
+            }
+            //glDrawArrays(GL_TRIANGLES, 0, 3);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
+            glfwSwapBuffers(window.handle()); // swap the color buffers
             glfwPollEvents();
         }
     }
 
+    private static void processKeyboard() {
+        camera.handleKeyboard(window);
+    }
+
     private static void init() {
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -53,43 +121,20 @@ public class Game {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Create the window
-        window = glfwCreateWindow(800, 800, "Voxel Game", NULL, NULL);
-        if (window == NULL)
-            throw new RuntimeException("Failed to create the GLFW window");
+        window = new Window("Voxel Game");
+        window.init();
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+        glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        window.setCursorPosCallback((long window, double x, double y) -> {
+            camera.handleCursorPos(x, y);
         });
 
-        // Get the thread stack and push a new frame
-        try(MemoryStack stack = stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1); // int*
-            IntBuffer pHeight = stack.mallocInt(1); // int*
+        window.setKeyCallback((long window, int key, int scancode, int action, int mods) -> {
 
-            // Get the window size passed to glfwCreateWindow
-            glfwGetWindowSize(window, pWidth, pHeight);
-
-            // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-            // Center the window
-            glfwSetWindowPos(
-                    window,
-                    (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
-            );
-        } // the stack frame is popped automatically
-
-        // Make the OpenGL context current
-        glfwMakeContextCurrent(window);
-        // Enable v-sync
-        glfwSwapInterval(1);
-
-        // Make the window visible
-        glfwShowWindow(window);
+        });
     }
 }
