@@ -13,12 +13,12 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class Camera {
 
-    public Vector3f pos;
-    public Vector3f front;
-    public Vector3f up;
+    private Vector3f pos;
+    private Vector3f front;
+    private Vector3f up;
 
-    private static float yaw = -90f;
-    private static float pitch;
+    private float yaw = -90f;
+    private float pitch;
 
     private double lastMouseX;
     private double lastMouseY;
