@@ -1,10 +1,10 @@
 package net.jay.voxelgame;
 
 import net.jay.voxelgame.render.Camera;
+import net.jay.voxelgame.render.Mesh;
 import net.jay.voxelgame.render.ShaderProgram;
 import net.jay.voxelgame.render.Texture;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
@@ -14,9 +14,7 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Game {
@@ -36,34 +34,8 @@ public class Game {
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        float[] vertices = {
-                0.5f,  0.5f, 0.0f, 1, 0,  // top right
-                0.5f, -0.5f, 0.0f, 1, 1,  // bottom right
-                -0.5f, -0.5f, 0.0f, 0, 1,  // bottom left
-                -0.5f,  0.5f, 0.0f, 0, 0  // top left
-        };
-        int[] indices = {
-                0, 1, 3,
-                1, 2, 3
-        };
-
-        int vao = glGenVertexArrays();
-        int vbo = glGenBuffers();
-        int ebo = glGenBuffers();
-        glBindVertexArray(vao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * 4, 0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * 4, 3 * 4);
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        Mesh mesh = new Mesh();
+        mesh.bind();
 
         ShaderProgram shaderProgram = new ShaderProgram();
         try {
@@ -88,18 +60,17 @@ public class Game {
 
             texture.bind();
             shaderProgram.bind();
-            glBindVertexArray(vao);
-            try(MemoryStack stack = MemoryStack.stackPush()) {
-                FloatBuffer fb = new Matrix4f()
-                        .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
-                        .lookAt(camera.pos,
-                                new Vector3f(camera.pos).add(camera.front),
-                                camera.up)
-                        .get(stack.mallocFloat(16));
-                glUniformMatrix4fv(shaderProgram.getUniformLocation("projectionMatrix"), false, fb);
+            camera.updateProjectionMatrix(shaderProgram);
+            for(int i = 0; i < 5; i++) {
+                try(MemoryStack stack = MemoryStack.stackPush()) {
+                    FloatBuffer fb1 = new Matrix4f()
+                            .translation(0, 0, i)
+                            .get(stack.mallocFloat(16));
+
+                    glUniformMatrix4fv(shaderProgram.getUniformLocation("worldMatrix"), false, fb1);
+                }
+                mesh.render();
             }
-            //glDrawArrays(GL_TRIANGLES, 0, 3);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
             glfwSwapBuffers(window.handle()); // swap the color buffers
             glfwPollEvents();

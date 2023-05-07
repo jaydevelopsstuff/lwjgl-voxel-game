@@ -1,10 +1,15 @@
 package net.jay.voxelgame.render;
 
 import net.jay.voxelgame.Window;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class Camera {
 
@@ -15,13 +20,24 @@ public class Camera {
     private static float yaw = -90f;
     private static float pitch;
 
-    private double lastMouseX = 400;
-    private double lastMouseY = 400;
+    private double lastMouseX;
+    private double lastMouseY;
+    private boolean firstMousePass = true;
 
     public Camera() {
         this.pos = new Vector3f(0, 0, 10);
         this.front = new Vector3f(0, 0, -1);
         this.up = new Vector3f(0, 1, 0);
+    }
+
+    public void updateProjectionMatrix(ShaderProgram shaderProgram) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer fb = new Matrix4f()
+                    .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
+                    .lookAt(pos, new Vector3f(pos).add(front), up)
+                    .get(stack.mallocFloat(16));
+            glUniformMatrix4fv(shaderProgram.getUniformLocation("projectionMatrix"), false, fb);
+        }
     }
 
     public void handleKeyboard(Window window) {
@@ -47,6 +63,12 @@ public class Camera {
     }
 
     public void handleCursorPos(double x, double y) {
+        if(firstMousePass) {
+            lastMouseX = x;
+            lastMouseY = y;
+            firstMousePass = false;
+        }
+
         float xOffset = (float)(x - lastMouseX);
         float yOffset = (float)(y - lastMouseY);
 
