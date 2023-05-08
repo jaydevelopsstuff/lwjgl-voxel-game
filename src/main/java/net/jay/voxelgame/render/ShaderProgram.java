@@ -3,6 +3,7 @@ package net.jay.voxelgame.render;
 import net.jay.voxelgame.util.FileUtil;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -18,6 +19,10 @@ public class ShaderProgram {
 
     public int getUniformLocation(String name) {
         return glGetUniformLocation(programId, name);
+    }
+
+    public void updateUniformMatrix4f(String name, FloatBuffer fb) {
+        glUniformMatrix4fv(getUniformLocation(name), false, fb);
     }
 
     public void createVertexShader(String filePath) throws IOException {

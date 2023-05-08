@@ -4,6 +4,7 @@ import net.jay.voxelgame.render.Camera;
 import net.jay.voxelgame.render.Mesh;
 import net.jay.voxelgame.render.ShaderProgram;
 import net.jay.voxelgame.render.Texture;
+import net.jay.voxelgame.world.Block;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -15,7 +16,6 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Game {
     private static Window window;
@@ -33,6 +33,7 @@ public class Game {
         GL.createCapabilities();
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_DEPTH_TEST);
 
         Mesh mesh = new Mesh();
         mesh.bind();
@@ -53,6 +54,8 @@ public class Game {
             throw new RuntimeException(e);
         }
 
+        Block block = new Block(0, 0, null);
+
         while(!window.shouldClose()) {
             processKeyboard();
 
@@ -61,16 +64,8 @@ public class Game {
             texture.bind();
             shaderProgram.bind();
             camera.updateProjectionMatrix(shaderProgram);
-            for(int i = 0; i < 5; i++) {
-                try(MemoryStack stack = MemoryStack.stackPush()) {
-                    FloatBuffer fb1 = new Matrix4f()
-                            .translation(0, 0, i)
-                            .get(stack.mallocFloat(16));
 
-                    glUniformMatrix4fv(shaderProgram.getUniformLocation("worldMatrix"), false, fb1);
-                }
-                mesh.render();
-            }
+            block.render(mesh, shaderProgram);
 
             glfwSwapBuffers(window.handle()); // swap the color buffers
             glfwPollEvents();
