@@ -54,7 +54,7 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        Block block = new Block(0, 0, null);
+        Block block = new Block(null);
 
         while(!window.shouldClose()) {
             processKeyboard();

@@ -8,13 +8,9 @@ import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class Block {
-    private final int x;
-    private final int y;
     private final BlockType block;
 
-    public Block(int x, int y, BlockType block) {
-        this.x = x;
-        this.y = y;
+    public Block(BlockType block) {
         this.block = block;
     }
 
@@ -53,14 +49,6 @@ public class Block {
             shaderProgram.updateUniformMatrix4f("worldMatrix", matrix.get(stack.mallocFloat(16)));
             mesh.render();
         }
-    }
-
-    public int x() {
-        return x;
-    }
-
-    public int y() {
-        return y;
     }
 
     public BlockType block() {
