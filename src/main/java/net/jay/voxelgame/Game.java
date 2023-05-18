@@ -4,27 +4,31 @@ import net.jay.voxelgame.render.Camera;
 import net.jay.voxelgame.render.Mesh;
 import net.jay.voxelgame.render.ShaderProgram;
 import net.jay.voxelgame.render.Texture;
+import net.jay.voxelgame.util.Raycast;
 import net.jay.voxelgame.world.Block;
-import org.joml.Matrix4f;
+import net.jay.voxelgame.world.BlockType;
+import net.jay.voxelgame.world.World;
+import org.joml.Vector3i;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
-import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
 
 public class Game {
     private static Window window;
     private static Camera camera = new Camera();
+    private static World world;
+    private static Mesh mesh;
+    private static boolean meshUpdate = false;
 
     public static void start() {
         System.out.println("Starting...");
 
-        init();
+        world = new World();
+        initGLFW();
         loop();
     }
 
@@ -35,17 +39,7 @@ public class Game {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
 
-        Mesh mesh = new Mesh();
-        mesh.bind();
-
-        ShaderProgram shaderProgram = new ShaderProgram();
-        try {
-            shaderProgram.createVertexShader("shaders/shader.vert");
-            shaderProgram.createFragmentShader("shaders/shader.frag");
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
-        shaderProgram.link();
+        ShaderProgram shaderProgram = initShaderProgram();
 
         Texture texture;
         try {
@@ -54,29 +48,50 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        Block block = new Block(null);
+        world.generateBlocks();
+        mesh = world.generateMesh();
+        mesh.init();
 
+        glEnable(GL_CULL_FACE);
         while(!window.shouldClose()) {
-            processKeyboard();
+            processInputs();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+            if(meshUpdate) {
+                mesh = new Mesh();
+                mesh = world.generateMesh();
+                mesh.init();
+                meshUpdate = false;
+            }
             texture.bind();
             shaderProgram.bind();
             camera.updateProjectionMatrix(shaderProgram);
 
-            block.render(mesh, shaderProgram);
+            mesh.render();
 
             glfwSwapBuffers(window.handle()); // swap the color buffers
             glfwPollEvents();
         }
     }
 
-    private static void processKeyboard() {
+    private static void processInputs() {
         camera.handleKeyboard(window);
     }
 
-    private static void init() {
+    private static ShaderProgram initShaderProgram() {
+        ShaderProgram shaderProgram = new ShaderProgram();
+        try {
+            shaderProgram.createVertexShader("shaders/shader.vert");
+            shaderProgram.createFragmentShader("shaders/shader.frag");
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+        shaderProgram.link();
+        return shaderProgram;
+    }
+
+    private static void initGLFW() {
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -97,6 +112,20 @@ public class Game {
         glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         window.setCursorPosCallback((long window, double x, double y) -> {
             camera.handleCursorPos(x, y);
+        });
+
+        window.setMouseButtonCallback((long window, int button, int action, int mods) -> {
+            if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_1) {
+                Vector3i result = Raycast.traceRay(world.blocks, camera.getPos(), camera.getFront(), new Vector3i(), 50);
+                if(result == null) return;
+                world.blocks[result.x][result.y][result.z] = Block.AIR;
+                meshUpdate = true;
+            } else if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_2) {
+                Vector3i result = new Vector3i();
+                Raycast.traceRay(world.blocks, camera.getPos(), camera.getFront(), result, 50);
+                world.blocks[result.x][result.y][result.z] = new Block(BlockType.Dirt);
+                meshUpdate = true;
+            }
         });
 
         window.setKeyCallback((long window, int key, int scancode, int action, int mods) -> {

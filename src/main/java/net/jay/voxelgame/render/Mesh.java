@@ -1,5 +1,11 @@
 package net.jay.voxelgame.render;
 
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -8,33 +14,43 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Mesh {
-    private float[] vertices;
-    private int[] indices;
+    private List<Vertex> vertices;
+    private List<Integer> indices;
+
+    private int vao;
+    private int vbo;
+    private int ebo;
 
     public Mesh() {
-        this.vertices = new float[]{
-                0.5f,  0.5f, 0.0f, 1, 0,  // top right
-                0.5f, -0.5f, 0.0f, 1, 1,  // bottom right
-                -0.5f, -0.5f, 0.0f, 0, 1,  // bottom left
-                -0.5f,  0.5f, 0.0f, 0, 0  // top left
-        };
-        this.indices = new int[]{
-            0, 1, 3,
-            1, 2, 3
-        };
+        this.vertices = new ArrayList<>();
+        this.indices = new ArrayList<>();
     }
 
-    public void bind() {
-        int vao = glGenVertexArrays();
-        int vbo = glGenBuffers();
-        int ebo = glGenBuffers();
+    public void addVertex(Vertex vertex) {
+        vertices.add(vertex);
+    }
+
+    public void addIndices(int... indices) {
+        int originalSize = vertices.size();
+        for(int index : indices) {
+            this.indices.add(originalSize + index);
+        }
+    }
+
+    public void init() {
+        vao = glGenVertexArrays();
+        vbo = glGenBuffers();
+        ebo = glGenBuffers();
         glBindVertexArray(vao);
 
+        float[] rawVertices = toRawVertices();
+        int[] rawIndices = indices.stream().mapToInt(Integer::intValue).toArray();
+
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, rawVertices, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, rawIndices, GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * 4, 0);
         glEnableVertexAttribArray(0);
@@ -42,7 +58,27 @@ public class Mesh {
         glEnableVertexAttribArray(1);
     }
 
+    public void bindVAO() {
+        glBindVertexArray(vao);
+    }
+
+    private float[] toRawVertices() {
+        float[] rawVertices = new float[vertices.size() * 5];
+        for(int i = 0; i < vertices.size(); i++) {
+            int rawIndex = i * 5;
+            Vertex vertex = vertices.get(i);
+            Vector3f positions = vertex.getPositions();
+            Vector2f uvs = vertex.getUvs();
+            rawVertices[rawIndex] = positions.x;
+            rawVertices[rawIndex + 1] = positions.y;
+            rawVertices[rawIndex + 2] = positions.z;
+            rawVertices[rawIndex + 3] = uvs.x;
+            rawVertices[rawIndex + 4] = uvs.y;
+        }
+        return rawVertices;
+    }
+
     public void render() {
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     }
 }

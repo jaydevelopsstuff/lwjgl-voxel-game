@@ -89,8 +89,18 @@ public class Camera {
         direction.y = (float)Math.sin(Math.toRadians(pitch));
         direction.z = (float)(Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         front = direction.normalize();
+        //System.out.println(front.x + ", " + front.y + ", " + front.z);
+
 
         lastMouseX = x;
         lastMouseY = y;
+    }
+
+    public Vector3f getPos() {
+        return pos;
+    }
+
+    public Vector3f getFront() {
+        return front;
     }
 }

@@ -1,7 +1,9 @@
 package net.jay.voxelgame;
 
+import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
@@ -40,6 +42,8 @@ public class Window {
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
+            // glfwSetWindowSize(handle, vidmode.width(), vidmode.height());
+
             // Center the window
             glfwSetWindowPos(
                     handle,
@@ -76,8 +80,19 @@ public class Window {
         glfwSetKeyCallback(handle, callback);
     }
 
+    public void setMouseButtonCallback(GLFWMouseButtonCallbackI callback) {
+        glfwSetMouseButtonCallback(handle, callback);
+    }
+
     public void setCursorPosCallback(GLFWCursorPosCallbackI callback) {
         glfwSetCursorPosCallback(handle, callback);
+    }
+
+    public Vector2i getSize() {
+        int[] w = new int[1];
+        int[] h = new int[1];
+        glfwGetWindowSize(handle, w, h);
+        return new Vector2i(w[0], h[0]);
     }
 
     public void setSize(int width, int height) {
