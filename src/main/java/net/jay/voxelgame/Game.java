@@ -5,6 +5,8 @@ import net.jay.voxelgame.util.Raycast;
 import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.World;
 import net.jay.voxelgame.world.block.Blocks;
+import org.joml.Vector2i;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -116,14 +118,18 @@ public class Game {
 
         window.setMouseButtonCallback((long window, int button, int action, int mods) -> {
             if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_1) {
-                Vector3i result = Raycast.traceRay(world.blocks, camera.getPos(), camera.getFront(), new Vector3i(), 50);
+                Vector2i chunkCoord = world.getChunkCoords(camera.getPos().x, camera.getPos().z);
+                if(chunkCoord == null) return;
+                Vector3i result = Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, camera.getPos(), camera.getFront(), new Vector3i(), 50);
                 if(result == null) return;
-                world.blocks[result.x][result.y][result.z] = Blocks.Air;
+                world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks()[result.x][result.y][result.z] = Blocks.Air;
                 meshUpdate = true;
             } else if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_2) {
                 Vector3i result = new Vector3i();
-                Raycast.traceRay(world.blocks, camera.getPos(), camera.getFront(), result, 50);
-                world.blocks[result.x][result.y][result.z] = Blocks.Dirt;
+                Vector2i chunkCoord = world.getChunkCoords(camera.getPos().x, camera.getPos().z);
+                if(chunkCoord == null) return;
+                Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, camera.getPos(), camera.getFront(), result, 50);
+                world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks()[result.x][result.y][result.z] = Blocks.Dirt;
                 meshUpdate = true;
             }
         });

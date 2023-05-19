@@ -4,8 +4,13 @@ import net.jay.voxelgame.world.block.Block;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+// TODO: Raycast through chunks
 public class Raycast {
-    public static Vector3i traceRay(Block[][][] blocks, Vector3f origin, Vector3f direction, Vector3i beforeIntercept, float maxDistance) {
+    public static Vector3i traceRay(Block[][][] blocks, Vector3f blocksRelativeStart, boolean relativeResult, Vector3f origin, Vector3f direction, Vector3i beforeIntercept, float maxDistance) {
+        int relativeStartX = round(blocksRelativeStart.x);
+        int relativeStartY = round(blocksRelativeStart.y);
+        int relativeStartZ = round(blocksRelativeStart.z);
+
         double moveX = direction.x / 6;
         double moveY = direction.y / 6;
         double moveZ = direction.z / 6;
@@ -26,17 +31,29 @@ public class Raycast {
             rayY += moveY;
             rayZ += moveZ;
 
-            if(rayX < 0 || rayY < 0 || rayZ < 0) return null;
+            if(rayX < 0 || rayY < 0 || rayZ < 0)
+                return null;
 
             int roundedX = round(rayX);
             int roundedY = round(rayY);
             int roundedZ = round(rayZ);
-            Block block = blocks[roundedX][roundedY][roundedZ];
+
+            if(roundedX - relativeStartX >= 16 || roundedY - relativeStartY >= 64 || roundedZ - relativeStartZ >= 16)
+                return null;
+
+            Block block = blocks[roundedX - relativeStartX][roundedY - relativeStartY][roundedZ - relativeStartZ];
             if(block.type() != Block.Type.Air) {
-                beforeIntercept.x = round(prevRayX);
-                beforeIntercept.y = round(prevRayY);
-                beforeIntercept.z = round(prevRayZ);
-                return new Vector3i(roundedX, roundedY, roundedZ);
+                if(relativeResult) {
+                    beforeIntercept.x = round(prevRayX) - relativeStartX;
+                    beforeIntercept.y = round(prevRayY) - relativeStartY;
+                    beforeIntercept.z = round(prevRayZ) - relativeStartZ;
+                    return new Vector3i(roundedX - relativeStartX, roundedY - relativeStartY, roundedZ - relativeStartZ);
+                } else {
+                    beforeIntercept.x = round(prevRayX);
+                    beforeIntercept.y = round(prevRayY);
+                    beforeIntercept.z = round(prevRayZ);
+                    return new Vector3i(roundedX, roundedY, roundedZ);
+                }
             }
 
             distanceTraveled += Math.sqrt(moveX*moveX + moveY*moveY + moveZ*moveZ);
