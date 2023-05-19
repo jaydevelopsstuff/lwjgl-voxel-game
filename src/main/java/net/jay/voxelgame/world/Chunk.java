@@ -7,7 +7,7 @@ import net.jay.voxelgame.world.block.Blocks;
 import java.util.Arrays;
 
 public class Chunk {
-    private Block[][][] blocks;
+    private final Block[][][] blocks;
 
     public Chunk() {
         this.blocks = new Block[16][64][16];

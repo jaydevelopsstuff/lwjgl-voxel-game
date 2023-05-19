@@ -3,7 +3,7 @@ package net.jay.voxelgame.entity.player;
 import net.jay.voxelgame.render.gl.Camera;
 
 public class ClientPlayer extends Player {
-    private Camera camera;
+    private final Camera camera;
 
     public ClientPlayer() {
         super();

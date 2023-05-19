@@ -19,7 +19,7 @@ public class GrassBlock extends Block {
     public static final Vector2f[] texCoordsUp = new Vector2f[] {
             new Vector2f(xStartTop, yEndTop), new Vector2f(xEndTop, yEndTop),
             new Vector2f(xEndTop, yStartTop), new Vector2f(xStartTop, yStartTop)
-    };;
+    };
     public static final Vector2f[] texCoordsDown = new Vector2f[] {
             new Vector2f(xStartBottom, yStartBottom), new Vector2f(xEndBottom, yStartBottom),
             new Vector2f(xEndBottom, yEndBottom), new Vector2f(xStartBottom, yEndBottom)

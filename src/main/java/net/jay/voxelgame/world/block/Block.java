@@ -23,7 +23,7 @@ public class Block {
         this.texCoordsUp = new Vector2f[] {
                 new Vector2f(xStart, yEnd), new Vector2f(xEnd, yEnd),
                 new Vector2f(xEnd, yStart), new Vector2f(xStart, yStart)
-        };;
+        };
         this.texCoordsDown = new Vector2f[] {
                 new Vector2f(xStart, yStart), new Vector2f(xEnd, yStart),
                 new Vector2f(xEnd, yEnd), new Vector2f(xStart, yEnd)
