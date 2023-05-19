@@ -1,4 +1,4 @@
-package net.jay.voxelgame.render.gl;
+package net.jay.voxelgame.render.gl.vertex;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
