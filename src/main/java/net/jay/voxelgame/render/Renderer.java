@@ -3,6 +3,8 @@ package net.jay.voxelgame.render;
 import static net.jay.voxelgame.Game.*;
 import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.render.gl.ShaderProgram;
+import net.jay.voxelgame.render.gl.TextureVertex;
+import net.jay.voxelgame.render.texture.Cubemap;
 import net.jay.voxelgame.render.texture.Texture;
 import org.lwjgl.opengl.GL;
 
@@ -11,7 +13,7 @@ import java.io.IOException;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
-    private Mesh blockMesh;
+    private Mesh<TextureVertex> blockMesh;
     private boolean meshUpdate;
 
     private ShaderProgram shaderProgram;
@@ -25,8 +27,9 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
 
         shaderProgram = initShaderProgram();
+
         try {
-            blockAtlas = Texture.loadNewTexture("assets/atlas.png");
+            blockAtlas = Texture.loadNewTexture("assets/textures/atlas.png");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +43,7 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
         if(meshUpdate) {
-            blockMesh = new Mesh();
+            blockMesh = new Mesh<>();
             blockMesh = world().generateMesh();
             blockMesh.init();
             meshUpdate = false;

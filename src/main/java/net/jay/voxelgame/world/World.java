@@ -1,6 +1,7 @@
 package net.jay.voxelgame.world;
 
 import net.jay.voxelgame.render.gl.Mesh;
+import net.jay.voxelgame.render.gl.TextureVertex;
 import org.joml.Vector2i;
 
 public class World {
@@ -23,8 +24,8 @@ public class World {
 
     }
 
-    public Mesh generateMesh() {
-        Mesh mesh = new Mesh();
+    public Mesh<TextureVertex> generateMesh() {
+        Mesh<TextureVertex> mesh = new Mesh<>();
 
         for(int chunkX = 0; chunkX < loadedChunks.length; chunkX++) {
             for(int chunkZ = 0; chunkZ < loadedChunks[chunkX].length; chunkZ++) {

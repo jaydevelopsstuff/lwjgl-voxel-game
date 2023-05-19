@@ -13,8 +13,8 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class Mesh {
-    private final List<Vertex> vertices;
+public class Mesh<T extends Vertex> {
+    private final List<T> vertices;
     private final List<Integer> indices;
 
     private int vao;
@@ -26,7 +26,7 @@ public class Mesh {
         this.indices = new ArrayList<>();
     }
 
-    public void addVertex(Vertex vertex) {
+    public void addVertex(T vertex) {
         vertices.add(vertex);
     }
 
@@ -63,17 +63,20 @@ public class Mesh {
     }
 
     private float[] toRawVertices() {
-        float[] rawVertices = new float[vertices.size() * 5];
+        float[] rawVertices = new float[vertices.size() * vertices.get(0).stride()];
         for(int i = 0; i < vertices.size(); i++) {
-            int rawIndex = i * 5;
-            Vertex vertex = vertices.get(i);
-            Vector3f positions = vertex.getPositions();
-            Vector2f uvs = vertex.getUvs();
-            rawVertices[rawIndex] = positions.x;
-            rawVertices[rawIndex + 1] = positions.y;
-            rawVertices[rawIndex + 2] = positions.z;
-            rawVertices[rawIndex + 3] = uvs.x;
-            rawVertices[rawIndex + 4] = uvs.y;
+            T vertex = vertices.get(i);
+            Vector3f position = vertex.position();
+            Vector2f uv = vertex.uv();
+            int rawIndex = i * vertex.stride();
+
+            rawVertices[rawIndex] = position.x;
+            rawVertices[rawIndex + 1] = position.y;
+            rawVertices[rawIndex + 2] = position.z;
+            if(uv != null && vertex.stride() >= 5) {
+                rawVertices[rawIndex + 3] = uv.x;
+                rawVertices[rawIndex + 4] = uv.y;
+            }
         }
         return rawVertices;
     }
