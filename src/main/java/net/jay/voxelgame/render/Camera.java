@@ -41,7 +41,7 @@ public class Camera {
     }
 
     public void handleKeyboard(Window window) {
-        float cameraSpeed = 0.05f;
+        float cameraSpeed = 0.08f;
         if(window.getKey(GLFW_KEY_W) == GLFW_PRESS) {
             pos.add(new Vector3f(front).mul(cameraSpeed));
         }

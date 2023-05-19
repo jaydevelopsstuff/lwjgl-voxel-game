@@ -1,7 +1,6 @@
 package net.jay.voxelgame.util;
 
-import net.jay.voxelgame.world.Block;
-import net.jay.voxelgame.world.BlockType;
+import net.jay.voxelgame.world.block.Block;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -33,7 +32,7 @@ public class Raycast {
             int roundedY = round(rayY);
             int roundedZ = round(rayZ);
             Block block = blocks[roundedX][roundedY][roundedZ];
-            if(block.block() != BlockType.Air) {
+            if(block.type() != Block.Type.Air) {
                 beforeIntercept.x = round(prevRayX);
                 beforeIntercept.y = round(prevRayY);
                 beforeIntercept.z = round(prevRayZ);

@@ -1,13 +1,10 @@
 package net.jay.voxelgame;
 
-import net.jay.voxelgame.render.Camera;
-import net.jay.voxelgame.render.Mesh;
-import net.jay.voxelgame.render.ShaderProgram;
-import net.jay.voxelgame.render.Texture;
+import net.jay.voxelgame.render.*;
 import net.jay.voxelgame.util.Raycast;
-import net.jay.voxelgame.world.Block;
-import net.jay.voxelgame.world.BlockType;
+import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.World;
+import net.jay.voxelgame.world.block.Blocks;
 import org.joml.Vector3i;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -16,6 +13,8 @@ import java.io.IOException;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL30.glUniform1ui;
 
 public class Game {
     private static Window window;
@@ -43,8 +42,8 @@ public class Game {
 
         Texture texture;
         try {
-            texture = Texture.loadNewTexture("assets/dirt.png");
-        } catch(IOException e) {
+            texture = Texture.loadNewTexture("assets/atlas.png");
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -100,10 +99,11 @@ public class Game {
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+        // glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         window = new Window("Voxel Game");
@@ -118,12 +118,12 @@ public class Game {
             if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_1) {
                 Vector3i result = Raycast.traceRay(world.blocks, camera.getPos(), camera.getFront(), new Vector3i(), 50);
                 if(result == null) return;
-                world.blocks[result.x][result.y][result.z] = Block.AIR;
+                world.blocks[result.x][result.y][result.z] = Blocks.Air;
                 meshUpdate = true;
             } else if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_2) {
                 Vector3i result = new Vector3i();
                 Raycast.traceRay(world.blocks, camera.getPos(), camera.getFront(), result, 50);
-                world.blocks[result.x][result.y][result.z] = new Block(BlockType.Dirt);
+                world.blocks[result.x][result.y][result.z] = Blocks.Dirt;
                 meshUpdate = true;
             }
         });
