@@ -1,8 +1,11 @@
 package net.jay.voxelgame;
 
-import net.jay.voxelgame.render.*;
+import net.jay.voxelgame.entity.player.ClientPlayer;
+import net.jay.voxelgame.render.Renderer;
+import net.jay.voxelgame.render.gl.Mesh;
+import net.jay.voxelgame.render.gl.ShaderProgram;
+import net.jay.voxelgame.render.texture.Texture;
 import net.jay.voxelgame.util.Raycast;
-import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.World;
 import net.jay.voxelgame.world.block.Blocks;
 import org.joml.Vector2i;
@@ -15,61 +18,32 @@ import java.io.IOException;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.glUniform1i;
-import static org.lwjgl.opengl.GL30.glUniform1ui;
 
 public class Game {
+    private static final String Name = "Voxel Game";
+
     private static Window window;
-    private static Camera camera = new Camera();
+    private static ClientPlayer player;
     private static World world;
-    private static Mesh mesh;
-    private static boolean meshUpdate = false;
+    private static Renderer renderer;
 
     public static void start() {
         System.out.println("Starting...");
 
         world = new World();
+        player = new ClientPlayer();
+        renderer = new Renderer();
         initGLFW();
         loop();
     }
 
     private static void loop() {
-        // Don't remove
-        GL.createCapabilities();
+        renderer.init();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glEnable(GL_DEPTH_TEST);
-
-        ShaderProgram shaderProgram = initShaderProgram();
-
-        Texture texture;
-        try {
-            texture = Texture.loadNewTexture("assets/atlas.png");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        texture.bind();
-
-        world.generateBlocks();
-        mesh = world.generateMesh();
-        mesh.init();
-
-        glEnable(GL_CULL_FACE);
         while(!window.shouldClose()) {
             processInputs();
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
-            if(meshUpdate) {
-                mesh = new Mesh();
-                mesh = world.generateMesh();
-                mesh.init();
-                meshUpdate = false;
-            }
-            shaderProgram.bind();
-            camera.updateProjectionMatrix(shaderProgram);
-
-            mesh.render();
+            renderer.render();
 
             glfwSwapBuffers(window.handle()); // swap the color buffers
             glfwPollEvents();
@@ -77,19 +51,9 @@ public class Game {
     }
 
     private static void processInputs() {
-        camera.handleKeyboard(window);
-    }
-
-    private static ShaderProgram initShaderProgram() {
-        ShaderProgram shaderProgram = new ShaderProgram();
-        try {
-            shaderProgram.createVertexShader("shaders/shader.vert");
-            shaderProgram.createFragmentShader("shaders/shader.frag");
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
-        shaderProgram.link();
-        return shaderProgram;
+        player.camera().handleKeyboard(window);
+        // Bad solution, change this
+        player.setPos(player.camera().pos().x, player.camera().pos().y, player.camera().pos().z);
     }
 
     private static void initGLFW() {
@@ -108,34 +72,46 @@ public class Game {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = new Window("Voxel Game");
+        window = new Window(Name);
         window.init();
 
         glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         window.setCursorPosCallback((long window, double x, double y) -> {
-            camera.handleCursorPos(x, y);
+            player.camera().handleCursorPos(x, y);
         });
 
         window.setMouseButtonCallback((long window, int button, int action, int mods) -> {
             if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_1) {
-                Vector2i chunkCoord = world.getChunkCoords(camera.getPos().x, camera.getPos().z);
+                Vector2i chunkCoord = world.getChunkCoords(player.camera().pos().x, player.camera().pos().z);
                 if(chunkCoord == null) return;
-                Vector3i result = Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, camera.getPos(), camera.getFront(), new Vector3i(), 50);
+                Vector3i result = Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, player.camera().pos(), player.camera().front(), new Vector3i(), 50);
                 if(result == null) return;
                 world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks()[result.x][result.y][result.z] = Blocks.Air;
-                meshUpdate = true;
+                renderer.queueMeshUpdate();
             } else if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_2) {
                 Vector3i result = new Vector3i();
-                Vector2i chunkCoord = world.getChunkCoords(camera.getPos().x, camera.getPos().z);
+                Vector2i chunkCoord = world.getChunkCoords(player.camera().pos().x, player.camera().pos().z);
                 if(chunkCoord == null) return;
-                Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, camera.getPos(), camera.getFront(), result, 50);
+                Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, player.camera().pos(), player.camera().front(), result, 50);
                 world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks()[result.x][result.y][result.z] = Blocks.Dirt;
-                meshUpdate = true;
+                renderer.queueMeshUpdate();
             }
         });
 
         window.setKeyCallback((long window, int key, int scancode, int action, int mods) -> {
 
         });
+    }
+
+    public static Window window() {
+        return window;
+    }
+
+    public static ClientPlayer player() {
+        return player;
+    }
+
+    public static World world() {
+        return world;
     }
 }

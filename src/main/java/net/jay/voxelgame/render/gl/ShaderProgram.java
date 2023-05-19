@@ -1,4 +1,4 @@
-package net.jay.voxelgame.render;
+package net.jay.voxelgame.render.gl;
 
 import net.jay.voxelgame.util.FileUtil;
 

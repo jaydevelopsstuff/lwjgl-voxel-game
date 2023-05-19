@@ -1,11 +1,7 @@
 package net.jay.voxelgame.world;
 
-import net.jay.voxelgame.render.Mesh;
-import net.jay.voxelgame.world.block.Block;
-import net.jay.voxelgame.world.block.Blocks;
+import net.jay.voxelgame.render.gl.Mesh;
 import org.joml.Vector2i;
-
-import java.util.Arrays;
 
 public class World {
     private Chunk[][] loadedChunks;

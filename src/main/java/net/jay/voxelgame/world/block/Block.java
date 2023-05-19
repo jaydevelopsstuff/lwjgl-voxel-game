@@ -1,8 +1,8 @@
 package net.jay.voxelgame.world.block;
 
-import net.jay.voxelgame.render.Mesh;
-import net.jay.voxelgame.render.ShaderProgram;
-import net.jay.voxelgame.render.Vertex;
+import net.jay.voxelgame.render.gl.Mesh;
+import net.jay.voxelgame.render.gl.ShaderProgram;
+import net.jay.voxelgame.render.gl.Vertex;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

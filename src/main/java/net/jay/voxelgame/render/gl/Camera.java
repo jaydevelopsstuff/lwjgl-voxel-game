@@ -1,4 +1,4 @@
-package net.jay.voxelgame.render;
+package net.jay.voxelgame.render.gl;
 
 import net.jay.voxelgame.Window;
 import org.joml.Matrix4f;
@@ -25,7 +25,7 @@ public class Camera {
     private boolean firstMousePass = true;
 
     public Camera() {
-        this.pos = new Vector3f(0, 0, 10);
+        this.pos = new Vector3f(0, 0, 0);
         this.front = new Vector3f(0, 0, -1);
         this.up = new Vector3f(0, 1, 0);
     }
@@ -33,7 +33,7 @@ public class Camera {
     public void updateProjectionMatrix(ShaderProgram shaderProgram) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer fb = new Matrix4f()
-                    .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
+                    .perspective((float) Math.toRadians(110.0f), 1.0f, 0.01f, 100.0f)
                     .lookAt(pos, new Vector3f(pos).add(front), up)
                     .get(stack.mallocFloat(16));
             glUniformMatrix4fv(shaderProgram.getUniformLocation("projectionMatrix"), false, fb);
@@ -89,18 +89,23 @@ public class Camera {
         direction.y = (float)Math.sin(Math.toRadians(pitch));
         direction.z = (float)(Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         front = direction.normalize();
-        //System.out.println(front.x + ", " + front.y + ", " + front.z);
 
 
         lastMouseX = x;
         lastMouseY = y;
     }
 
-    public Vector3f getPos() {
+    public Vector3f pos() {
         return pos;
     }
 
-    public Vector3f getFront() {
+    public void setPos(double x, double y, double z) {
+        pos.x = (float)x;
+        pos.y = (float)y;
+        pos.z = (float)z;
+    }
+
+    public Vector3f front() {
         return front;
     }
 }

@@ -1,4 +1,4 @@
-package net.jay.voxelgame.render;
+package net.jay.voxelgame.render.texture;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
@@ -9,45 +9,28 @@ import java.nio.IntBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
-import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
-import static org.lwjgl.opengl.GL45.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.memSlice;
 
-public class TextureArray {
+public class Texture {
     private final int id;
 
-    private TextureArray(int id) {
+    private Texture(int id) {
         this.id = id;
     }
 
     public void bind() {
-        glBindTextureUnit(0, id);
+        glBindTexture(GL_TEXTURE_2D, id);
     }
 
-    public static TextureArray loadNewTextureArray() {
-        TextureArray texArray = new TextureArray(glCreateTextures(GL_TEXTURE_2D_ARRAY));
-
-        ImageResult image = loadImage("assets/blocks/dirt.png");
-
-        glTextureStorage3D(texArray.id, 1, GL_RGBA8, image.width, image.height, 1);
-
-        glTextureSubImage2D(texArray.id, 1, 0, 0, image.width, image.height, GL_RGBA, GL_UNSIGNED_BYTE, image.data);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        stbi_image_free(image.data);
-
-        glBindTextureUnit(0, texArray.id);
-        return texArray;
+    public int id() {
+        return id;
     }
 
-    public static ImageResult loadImage(String filePath) {
+    public static Texture loadNewTexture(String filePath) throws IOException {
         ByteBuffer image;
 
         int w;
@@ -67,15 +50,21 @@ public class TextureArray {
             w = wBuf.get(0);
             h = wBuf.get(0);
             comp = wBuf.get(0);
-        } catch(IOException e) {
-            throw new RuntimeException(e);
         }
 
-        return new ImageResult(image, w, h);
-    }
+        Texture texture = new Texture(glGenTextures());
+        glBindTexture(GL_TEXTURE_2D, texture.id);
 
-    public int id() {
-        return id;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(image);
+
+        return texture;
     }
 
     private static ByteBuffer resourceToByteBuffer(String filePath, int bufferSize) throws IOException {
@@ -93,17 +82,5 @@ public class TextureArray {
 
         buffer.flip();
         return memSlice(buffer);
-    }
-
-    private static class ImageResult {
-        public ByteBuffer data;
-        public int width;
-        public int height;
-
-        public ImageResult(ByteBuffer data, int width, int height) {
-            this.data = data;
-            this.width = width;
-            this.height = height;
-        }
     }
 }

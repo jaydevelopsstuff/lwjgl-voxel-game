@@ -1,6 +1,6 @@
 package net.jay.voxelgame.world;
 
-import net.jay.voxelgame.render.Mesh;
+import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.block.Blocks;
 
