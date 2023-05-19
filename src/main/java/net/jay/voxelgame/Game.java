@@ -46,6 +46,7 @@ public class Game {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        texture.bind();
 
         world.generateBlocks();
         mesh = world.generateMesh();
@@ -63,7 +64,6 @@ public class Game {
                 mesh.init();
                 meshUpdate = false;
             }
-            texture.bind();
             shaderProgram.bind();
             camera.updateProjectionMatrix(shaderProgram);
 
