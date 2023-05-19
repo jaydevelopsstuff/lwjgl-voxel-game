@@ -8,14 +8,13 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class Camera {
 
-    private Vector3f pos;
+    private final Vector3f pos;
     private Vector3f front;
-    private Vector3f up;
+    private final Vector3f up;
 
     private float yaw = -90f;
     private float pitch;

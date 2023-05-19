@@ -3,7 +3,7 @@ package net.jay.voxelgame.entity.player;
 import org.joml.Vector3f;
 
 public class Player {
-    private Vector3f pos;
+    private final Vector3f pos;
 
     public Player() {
         this.pos = new Vector3f();

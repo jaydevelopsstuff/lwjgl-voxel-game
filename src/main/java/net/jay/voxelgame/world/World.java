@@ -4,7 +4,7 @@ import net.jay.voxelgame.render.gl.Mesh;
 import org.joml.Vector2i;
 
 public class World {
-    private Chunk[][] loadedChunks;
+    private final Chunk[][] loadedChunks;
 
     public World() {
         this.loadedChunks = new Chunk[4][4];

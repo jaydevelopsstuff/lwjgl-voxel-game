@@ -6,8 +6,6 @@ import net.jay.voxelgame.render.gl.Vertex;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
-
 public class Block {
     private final Type type;
 
@@ -23,7 +21,7 @@ public class Block {
         this.texCoordsUp = new Vector2f[] {
                 new Vector2f(xStart, yEnd), new Vector2f(xEnd, yEnd),
                 new Vector2f(xEnd, yStart), new Vector2f(xStart, yStart)
-        };;
+        };
         this.texCoordsDown = new Vector2f[] {
                 new Vector2f(xStart, yStart), new Vector2f(xEnd, yStart),
                 new Vector2f(xEnd, yEnd), new Vector2f(xStart, yEnd)

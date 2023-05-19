@@ -2,22 +2,15 @@ package net.jay.voxelgame;
 
 import net.jay.voxelgame.entity.player.ClientPlayer;
 import net.jay.voxelgame.render.Renderer;
-import net.jay.voxelgame.render.gl.Mesh;
-import net.jay.voxelgame.render.gl.ShaderProgram;
-import net.jay.voxelgame.render.texture.Texture;
 import net.jay.voxelgame.util.Raycast;
 import net.jay.voxelgame.world.World;
 import net.jay.voxelgame.world.block.Blocks;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
-
-import java.io.IOException;
+import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 
 public class Game {
     private static final String Name = "Voxel Game";

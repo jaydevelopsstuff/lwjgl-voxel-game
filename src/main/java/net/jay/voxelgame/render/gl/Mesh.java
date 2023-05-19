@@ -14,8 +14,8 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Mesh {
-    private List<Vertex> vertices;
-    private List<Integer> indices;
+    private final List<Vertex> vertices;
+    private final List<Integer> indices;
 
     private int vao;
     private int vbo;
