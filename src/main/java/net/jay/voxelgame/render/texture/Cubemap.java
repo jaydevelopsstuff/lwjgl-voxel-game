@@ -1,6 +1,9 @@
 package net.jay.voxelgame.render.texture;
 
+import net.jay.voxelgame.render.gl.Mesh;
+import net.jay.voxelgame.render.gl.vertex.PositionVertex;
 import net.jay.voxelgame.util.TextureUtil;
+import org.joml.Vector3f;
 
 import java.io.IOException;
 
@@ -46,5 +49,53 @@ public class Cubemap {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
         return cubemap;
+    }
+
+    public static final Mesh<PositionVertex> cubeMesh = new Mesh<>(false);
+
+    static {
+        cubeMesh.addVertices(
+                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
+
+                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(-1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
+
+                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
+
+                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
+
+                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
+
+                new PositionVertex(new Vector3f(-1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
+                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
+                new PositionVertex(new Vector3f(1.0f, -1.0f,  1.0f))
+        );
     }
 }

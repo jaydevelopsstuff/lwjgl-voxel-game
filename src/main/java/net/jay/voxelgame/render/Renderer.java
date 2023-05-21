@@ -19,8 +19,6 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 
 public class Renderer {
     private Mesh<TextureVertex> blockMesh;
@@ -58,50 +56,7 @@ public class Renderer {
             throw new RuntimeException(e);
         }
 
-        skyboxMesh = new Mesh<>(false);
-        skyboxMesh.addVertices(
-                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
-
-                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(-1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
-
-                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
-
-                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
-
-                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(-1.0f,  1.0f, -1.0f)),
-
-                new PositionVertex(new Vector3f(-1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f, -1.0f)),
-                new PositionVertex(new Vector3f(-1.0f, -1.0f,  1.0f)),
-                new PositionVertex(new Vector3f(1.0f, -1.0f,  1.0f))
-        );
+        skyboxMesh = Cubemap.cubeMesh;
         skyboxMesh.init();
 
         blockShaderProgram = initBlockShaderProgram();
