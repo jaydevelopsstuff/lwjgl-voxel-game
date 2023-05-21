@@ -32,9 +32,6 @@ public class Renderer {
     private Texture blockAtlas;
     private Cubemap skyboxTexture;
 
-    private int skyboxVAO;
-    private int skyboxVBO;
-
     public void init() {
         GL.createCapabilities();
 
