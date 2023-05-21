@@ -1,9 +1,11 @@
 package net.jay.voxelgame.render.gl;
 
+import net.jay.voxelgame.render.gl.vertex.Vertex;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
@@ -16,18 +18,24 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class Mesh<T extends Vertex> {
     private final List<T> vertices;
     private final List<Integer> indices;
+    private final boolean useEbo;
 
     private int vao;
     private int vbo;
     private int ebo;
 
-    public Mesh() {
+    public Mesh(boolean useEbo) {
         this.vertices = new ArrayList<>();
         this.indices = new ArrayList<>();
+        this.useEbo = useEbo;
     }
 
     public void addVertex(T vertex) {
         vertices.add(vertex);
+    }
+
+    public void addVertices(T... vertices) {
+        this.vertices.addAll(Arrays.asList(vertices));
     }
 
     public void addIndices(int... indices) {
@@ -40,7 +48,7 @@ public class Mesh<T extends Vertex> {
     public void init() {
         vao = glGenVertexArrays();
         vbo = glGenBuffers();
-        ebo = glGenBuffers();
+        if(useEbo) ebo = glGenBuffers();
         glBindVertexArray(vao);
 
         float[] rawVertices = toRawVertices();
@@ -49,12 +57,16 @@ public class Mesh<T extends Vertex> {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, rawVertices, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, rawIndices, GL_STATIC_DRAW);
+        if(useEbo) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, rawIndices, GL_STATIC_DRAW);
+        }
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * 4, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, vertices.get(0).stride() * 4, 0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * 4, 3 * 4);
+        if(vertices.get(0).stride() <= 3)
+            return;
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, vertices.get(0).stride() * 4, 3 * 4);
         glEnableVertexAttribArray(1);
     }
 
@@ -82,6 +94,7 @@ public class Mesh<T extends Vertex> {
     }
 
     public void render() {
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        if(useEbo) glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        else glDrawArrays(GL_TRIANGLES, 0, vertices.size());
     }
 }

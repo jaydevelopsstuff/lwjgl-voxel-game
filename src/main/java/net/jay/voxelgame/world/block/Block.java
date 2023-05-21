@@ -2,7 +2,7 @@ package net.jay.voxelgame.world.block;
 
 import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.render.gl.ShaderProgram;
-import net.jay.voxelgame.render.gl.Vertex;
+import net.jay.voxelgame.render.gl.vertex.TextureVertex;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -65,10 +65,10 @@ public class Block {
                 2, 3, 0
         );
 
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), texCoordsUp[0])); // 0 - Front Left (TC - 0, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f), texCoordsUp[1])); // 1 - Front Right (TC - 1, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y + 0.5f, z - 0.5f), texCoordsUp[2])); // 2 - Back Right (TC - 1, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), texCoordsUp[3])); // 3 - Back Left (TC - 0, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), texCoordsUp[0])); // 0 - Front Left (TC - 0, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f), texCoordsUp[1])); // 1 - Front Right (TC - 1, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y + 0.5f, z - 0.5f), texCoordsUp[2])); // 2 - Back Right (TC - 1, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), texCoordsUp[3])); // 3 - Back Left (TC - 0, 0)
 
         return mesh;
     }
@@ -80,10 +80,10 @@ public class Block {
                 2, 3, 0
         );
 
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y - 0.5f, z - 0.5f), texCoordsDown[0])); // 0 - Back Left (TC - 0, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y - 0.5f, z - 0.5f), texCoordsDown[1])); // 1 - Back Right (TC - 1, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y - 0.5f, z + 0.5f), texCoordsDown[2])); // 2 - Front Right (TC - 1, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y - 0.5f, z + 0.5f), texCoordsDown[3])); // 3 - Front Left (TC - 0, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y - 0.5f, z - 0.5f), texCoordsDown[0])); // 0 - Back Left (TC - 0, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y - 0.5f, z - 0.5f), texCoordsDown[1])); // 1 - Back Right (TC - 1, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y - 0.5f, z + 0.5f), texCoordsDown[2])); // 2 - Front Right (TC - 1, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y - 0.5f, z + 0.5f), texCoordsDown[3])); // 3 - Front Left (TC - 0, 1)
 
         return mesh;
     }
@@ -95,10 +95,10 @@ public class Block {
                 2, 3, 0
         );
 
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y - 0.5f, z + 0.5f), texCoordsNorth[0])); // 0 - Top Right (TC - 1, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f), texCoordsNorth[1])); // 1 - Bottom Right (TC - 1, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), texCoordsNorth[2])); // 2 - Bottom Left (TC - 0, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y - 0.5f, z + 0.5f), texCoordsNorth[3])); // 3 - Top Left (TC - 0, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y - 0.5f, z + 0.5f), texCoordsNorth[0])); // 0 - Top Right (TC - 1, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f), texCoordsNorth[1])); // 1 - Bottom Right (TC - 1, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), texCoordsNorth[2])); // 2 - Bottom Left (TC - 0, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y - 0.5f, z + 0.5f), texCoordsNorth[3])); // 3 - Top Left (TC - 0, 0)
 
         return mesh;
     }
@@ -110,10 +110,10 @@ public class Block {
                 2, 3, 0
         );
 
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y - 0.5f, z - 0.5f), texCoordsEast[0])); // 0 - Back Bottom (TC - 0, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y + 0.5f, z - 0.5f), texCoordsEast[1])); // 1 - Back Top (TC - 0, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f), texCoordsEast[2])); // 2 - Front Top (TC - 1, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y - 0.5f, z + 0.5f), texCoordsEast[3])); // 3 - Front Bottom (TC - 1, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y - 0.5f, z - 0.5f), texCoordsEast[0])); // 0 - Back Bottom (TC - 0, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y + 0.5f, z - 0.5f), texCoordsEast[1])); // 1 - Back Top (TC - 0, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f), texCoordsEast[2])); // 2 - Front Top (TC - 1, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y - 0.5f, z + 0.5f), texCoordsEast[3])); // 3 - Front Bottom (TC - 1, 1)
 
         return mesh;
     }
@@ -125,10 +125,10 @@ public class Block {
                 2, 3, 0
         );
 
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y - 0.5f, z - 0.5f), texCoordsSouth[0])); // 0 - Top Left (TC - 0, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), texCoordsSouth[1])); // 1 - Bottom Left (TC - 0, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y + 0.5f, z - 0.5f), texCoordsSouth[2])); // 2 - Bottom Right (TC - 1, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x + 0.5f, y - 0.5f, z - 0.5f), texCoordsSouth[3])); // 3 - Top Right (TC - 1, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y - 0.5f, z - 0.5f), texCoordsSouth[0])); // 0 - Top Left (TC - 0, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), texCoordsSouth[1])); // 1 - Bottom Left (TC - 0, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y + 0.5f, z - 0.5f), texCoordsSouth[2])); // 2 - Bottom Right (TC - 1, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x + 0.5f, y - 0.5f, z - 0.5f), texCoordsSouth[3])); // 3 - Top Right (TC - 1, 0)
 
         return mesh;
     }
@@ -139,10 +139,10 @@ public class Block {
                 2, 3, 0
         );
 
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y - 0.5f, z + 0.5f), texCoordsWest[0])); // 0 - Front Bottom (TC - 1, 1)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), texCoordsWest[1])); // 1 - Front Top (TC - 1, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), texCoordsWest[2])); // 2 - Back Top (TC - 0, 0)
-        mesh.addVertex(new Vertex(new Vector3f(x - 0.5f, y - 0.5f, z - 0.5f), texCoordsWest[3])); // 3 - Back Bottom (TC - 0, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y - 0.5f, z + 0.5f), texCoordsWest[0])); // 0 - Front Bottom (TC - 1, 1)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), texCoordsWest[1])); // 1 - Front Top (TC - 1, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), texCoordsWest[2])); // 2 - Back Top (TC - 0, 0)
+        mesh.addVertex(new TextureVertex(new Vector3f(x - 0.5f, y - 0.5f, z - 0.5f), texCoordsWest[3])); // 3 - Back Bottom (TC - 0, 1)
 
         return mesh;
     }

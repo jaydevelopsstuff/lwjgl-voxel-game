@@ -1,14 +1,14 @@
 package net.jay.voxelgame.world;
 
 import net.jay.voxelgame.render.gl.Mesh;
-import net.jay.voxelgame.render.gl.TextureVertex;
+import net.jay.voxelgame.render.gl.vertex.TextureVertex;
 import org.joml.Vector2i;
 
 public class World {
     private final Chunk[][] loadedChunks;
 
     public World() {
-        this.loadedChunks = new Chunk[4][4];
+        this.loadedChunks = new Chunk[8][8];
         for(Chunk[] chunks : loadedChunks) {
             for(int i = 0; i < chunks.length; i++) {
                 chunks[i] = new Chunk();
@@ -25,7 +25,7 @@ public class World {
     }
 
     public Mesh<TextureVertex> generateMesh() {
-        Mesh<TextureVertex> mesh = new Mesh<>();
+        Mesh<TextureVertex> mesh = new Mesh<>(true);
 
         for(int chunkX = 0; chunkX < loadedChunks.length; chunkX++) {
             for(int chunkZ = 0; chunkZ < loadedChunks[chunkX].length; chunkZ++) {

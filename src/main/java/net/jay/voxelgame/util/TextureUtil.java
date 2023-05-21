@@ -1,5 +1,6 @@
 package net.jay.voxelgame.util;
 
+import org.joml.Vector2f;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;

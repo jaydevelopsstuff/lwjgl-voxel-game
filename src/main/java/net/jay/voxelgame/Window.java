@@ -36,13 +36,11 @@ public class Window {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
+            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            glfwSetWindowSize(handle, vidmode.width(), vidmode.height());
+
             // Get the window size passed to glfwCreateWindow
             glfwGetWindowSize(handle, pWidth, pHeight);
-
-            // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-            // glfwSetWindowSize(handle, vidmode.width(), vidmode.height());
 
             // Center the window
             glfwSetWindowPos(
