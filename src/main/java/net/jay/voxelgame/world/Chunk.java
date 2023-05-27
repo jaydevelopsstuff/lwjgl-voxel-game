@@ -1,8 +1,10 @@
 package net.jay.voxelgame.world;
 
 import net.jay.voxelgame.render.gl.Mesh;
+import net.jay.voxelgame.render.gl.vertex.TextureVertex;
 import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.block.Blocks;
+import org.joml.Vector3i;
 
 import java.util.Arrays;
 
@@ -10,7 +12,7 @@ public class Chunk {
     private final Block[][][] blocks;
 
     public Chunk() {
-        this.blocks = new Block[16][64][16];
+        this.blocks = new Block[16][World.Height][16];
 
         for(int x = 0; x < blocks.length; x++) {
             for(int y = 0; y < blocks[x].length; y++) {
@@ -29,7 +31,7 @@ public class Chunk {
         }
     }
 
-    public void generateMesh(int xOffset, int zOffset, Mesh mesh) {
+    public void generateMesh(int xOffset, int zOffset, Mesh<TextureVertex> mesh) {
         for(int x = 0; x < blocks.length; x++) {
             for(int y = 0; y < blocks[x].length; y++) {
                 for(int z = 0; z < blocks[x][y].length; z++) {
@@ -65,6 +67,22 @@ public class Chunk {
                 }
             }
         }
+    }
+
+    public Block blockAt(int x, int y, int z) {
+        return blocks[x][y][z];
+    }
+
+    public Block blockAt(Vector3i position) {
+        return blockAt(position.x, position.y, position.z);
+    }
+
+    public void setBlock(Block block, int x, int y, int z) {
+        blocks[x][y][z] = block;
+    }
+
+    public void setBlock(Block block, Vector3i position) {
+        setBlock(block, position.x, position.y, position.z);
     }
 
     public Block[][][] blocks() {

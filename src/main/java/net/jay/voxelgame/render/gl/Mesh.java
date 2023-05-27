@@ -94,7 +94,8 @@ public class Mesh<T extends Vertex> {
     }
 
     public void render() {
-        if(useEbo) glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        if(useEbo)
+            glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
         else glDrawArrays(GL_TRIANGLES, 0, vertices.size());
     }
 }

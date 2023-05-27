@@ -7,8 +7,11 @@ import net.jay.voxelgame.render.gl.vertex.PositionVertex;
 import net.jay.voxelgame.render.gl.vertex.TextureVertex;
 import net.jay.voxelgame.render.texture.Cubemap;
 import net.jay.voxelgame.render.texture.Texture;
+import net.jay.voxelgame.render.ui.GuiAtlases;
+import net.jay.voxelgame.render.ui.GuiRenderer;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
@@ -17,16 +20,17 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Renderer {
+    private GuiRenderer guiRenderer;
+
     private Mesh<TextureVertex> blockMesh;
     private boolean meshUpdate;
     private Mesh<PositionVertex> skyboxMesh;
 
-    private ShaderProgram blockShaderProgram;
-    private ShaderProgram skyboxShaderProgram;
+    private ShaderProgram textureShaderProgram;
+    private ShaderProgram vertexShaderProgram;
 
 
     private Texture blockAtlas;
@@ -39,32 +43,23 @@ public class Renderer {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
-        skyboxShaderProgram = initSkyboxShaderProgram();
+        vertexShaderProgram = initVertexShaderProgram();
+        textureShaderProgram = initTextureShaderProgram();
+
         try {
-            skyboxTexture = Cubemap.loadNewCubemap(new String[] {
-                    "assets/textures/skybox/right.jpg",
-                    "assets/textures/skybox/left.jpg",
-                    "assets/textures/skybox/top.jpg",
-                    "assets/textures/skybox/bottom.jpg",
-                    "assets/textures/skybox/front.jpg",
-                    "assets/textures/skybox/back.jpg"
-            });
-        } catch (IOException e) {
+            loadTextures();
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
 
         skyboxMesh = Cubemap.cubeMesh;
         skyboxMesh.init();
 
-        blockShaderProgram = initBlockShaderProgram();
-        try {
-            blockAtlas = Texture.loadNewTexture("assets/textures/atlas.png");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         blockMesh = world().generateMesh();
         blockMesh.init();
+
+        guiRenderer = new GuiRenderer();
+        guiRenderer.init();
     }
 
     public void render() {
@@ -72,33 +67,53 @@ public class Renderer {
 
         // Skybox
         glDepthMask(false);
-        skyboxShaderProgram.bind();
+        vertexShaderProgram.bind();
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer fb = new Matrix4f(new Matrix3f(player().camera().getViewMatrix())).get(stack.mallocFloat(16));
+            FloatBuffer fb = new Matrix4f(new Matrix3f(player().camera().getViewMatrix())).get(stack.mallocFloat(16)); // Get rid of translation
             FloatBuffer fb1 = player().camera().getProjectionMatrix().get(stack.mallocFloat(16));
-            glUniformMatrix4fv(skyboxShaderProgram.getUniformLocation("viewMatrix"), false, fb);
-            glUniformMatrix4fv(skyboxShaderProgram.getUniformLocation("projectionMatrix"), false, fb1);
+            glUniformMatrix4fv(vertexShaderProgram.getUniformLocation("viewMatrix"), false, fb);
+            glUniformMatrix4fv(vertexShaderProgram.getUniformLocation("projectionMatrix"), false, fb1);
         }
         skyboxMesh.bindVAO();
         skyboxTexture.bind();
         skyboxMesh.render();
-        glDepthMask(true);
 
         // Blocks
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(true);
         if(meshUpdate) {
             blockMesh = new Mesh<>(true);
             blockMesh = world().generateMesh();
             blockMesh.init();
             meshUpdate = false;
         }
-        blockShaderProgram.bind();
-        player().camera().updateViewProjectionMatrix(blockShaderProgram);
+        textureShaderProgram.bind();
+        player().camera().updateViewProjectionMatrix(textureShaderProgram);
         blockMesh.bindVAO();
         blockAtlas.bind();
         blockMesh.render();
+
+        // GUI
+        // guiRenderer.render(textureShaderProgram);
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(true);
     }
 
-    private static ShaderProgram initBlockShaderProgram() {
+    private void loadTextures() throws IOException {
+        skyboxTexture = Cubemap.loadNewCubemap(new String[] {
+                "assets/textures/skybox/right.jpg",
+                "assets/textures/skybox/left.jpg",
+                "assets/textures/skybox/top.jpg",
+                "assets/textures/skybox/bottom.jpg",
+                "assets/textures/skybox/front.jpg",
+                "assets/textures/skybox/back.jpg"
+        });
+        blockAtlas = Texture.loadNewTexture("assets/textures/atlas.png");
+        GuiAtlases.initAtlases();
+    }
+
+    private static ShaderProgram initTextureShaderProgram() {
         ShaderProgram shaderProgram = new ShaderProgram();
         try {
             shaderProgram.createVertexShader("shaders/shader.vert");
@@ -110,7 +125,7 @@ public class Renderer {
         return shaderProgram;
     }
 
-    private static ShaderProgram initSkyboxShaderProgram() {
+    private static ShaderProgram initVertexShaderProgram() {
         ShaderProgram shaderProgram = new ShaderProgram();
         try {
             shaderProgram.createVertexShader("shaders/skybox.vert");

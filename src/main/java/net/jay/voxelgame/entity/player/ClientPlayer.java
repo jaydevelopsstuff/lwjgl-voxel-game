@@ -1,13 +1,138 @@
 package net.jay.voxelgame.entity.player;
 
-import net.jay.voxelgame.render.gl.Camera;
+import net.jay.voxelgame.Game;
+import net.jay.voxelgame.Window;
+import net.jay.voxelgame.render.camera.Camera;
+import net.jay.voxelgame.util.MathUtil;
+import net.jay.voxelgame.world.Chunk;
+import net.jay.voxelgame.world.block.Block;
+import org.joml.Vector2i;
+import org.joml.Vector3f;
+
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class ClientPlayer extends Player {
+    private static final float movementSpeed = 0.01f;
+
     private final Camera camera;
+    private Block.Type selectedBlock;
+
+    private boolean wPressed, sPressed, aPressed, dPressed, spacePressed;
+
+    private double lastMouseX;
+    private double lastMouseY;
+    private boolean firstMousePass = true;
 
     public ClientPlayer() {
         super();
         this.camera = new Camera();
+        this.selectedBlock = Block.Type.Dirt;
+        setYaw(-90f);
+    }
+
+    public void tick() {
+        super.tick();
+
+        tickMovement();
+
+        if(!onGround) {
+           velocity().add(0, -0.002f, 0);
+        } else {
+            velocity().sub(0, velocity().y, 0);
+        }
+    }
+
+    private void tickMovement() {
+        Vector3f front = camera.front();
+        Vector3f up = camera.up();
+
+        velocity().sub(velocity().x / 8f, 0, velocity().z / 8f);
+
+        if(wPressed) {
+            velocity().add(new Vector3f(front.x, 0, front.z).mul(movementSpeed));
+        }
+        if(sPressed) {
+            velocity().sub(new Vector3f(front.x, 0, front.z).mul(movementSpeed));
+        }
+        if(aPressed) {
+            velocity().sub(new Vector3f(front).cross(up).normalize().mul(movementSpeed));
+        }
+        if(dPressed) {
+            velocity().add(new Vector3f(front).cross(up).normalize().mul(movementSpeed));
+        }
+        if(spacePressed && onGround) {
+            velocity().add(new Vector3f(up).mul(0.1f));
+            onGround = false;
+        }
+    }
+
+    public void handleKeyboardInput(Window window) {
+        if(window.getKey(GLFW_KEY_W) == GLFW_PRESS) {
+            wPressed = true;
+        }
+        if(window.getKey(GLFW_KEY_S) == GLFW_PRESS) {
+            sPressed = true;
+        }
+        if(window.getKey(GLFW_KEY_A) == GLFW_PRESS) {
+            aPressed = true;
+        }
+        if(window.getKey(GLFW_KEY_D) == GLFW_PRESS) {
+            dPressed = true;
+        }
+        if(window.getKey(GLFW_KEY_SPACE) == GLFW_PRESS) {
+            spacePressed = true;
+        }
+
+
+        if(window.getKey(GLFW_KEY_W) == GLFW_RELEASE) {
+            wPressed = false;
+        }
+        if(window.getKey(GLFW_KEY_S) == GLFW_RELEASE) {
+            sPressed = false;
+        }
+        if(window.getKey(GLFW_KEY_A) == GLFW_RELEASE) {
+            aPressed = false;
+        }
+        if(window.getKey(GLFW_KEY_D) == GLFW_RELEASE) {
+            dPressed = false;
+        }
+        if(window.getKey(GLFW_KEY_SPACE) == GLFW_RELEASE) {
+            spacePressed = false;
+        }
+    }
+
+    public void handleCursorPosInput(double x, double y) {
+        if(firstMousePass) {
+            lastMouseX = x;
+            lastMouseY = y;
+            firstMousePass = false;
+        }
+
+        float xOffset = (float)(x - lastMouseX);
+        float yOffset = (float)(y - lastMouseY);
+
+        float sensitivity = 0.05f;
+        xOffset *= sensitivity;
+        yOffset *= sensitivity;
+
+        setYaw(yaw() + xOffset);
+        setPitch(pitch() - yOffset);
+
+        if(pitch() > 89.0f)
+            setPitch(89.0f);
+        if(pitch() < -89.0f)
+            setPitch(-89.0f);
+
+        Vector3f direction = new Vector3f();
+        direction.x = (float)(Math.cos(Math.toRadians(yaw())) * Math.cos(Math.toRadians(pitch())));
+        direction.y = (float)Math.sin(Math.toRadians(pitch()));
+        direction.z = (float)(Math.sin(Math.toRadians(yaw())) * Math.cos(Math.toRadians(pitch())));
+        camera.front().set(direction.normalize());
+
+
+        lastMouseX = x;
+        lastMouseY = y;
     }
 
     public Camera camera() {
@@ -18,5 +143,13 @@ public class ClientPlayer extends Player {
     public void setPos(double x, double y, double z) {
         super.setPos(x, y, z);
         camera.setPos(x, y, z);
+    }
+
+    public Block.Type selectedBlock() {
+        return selectedBlock;
+    }
+
+    public void setSelectedBlock(Block.Type selectedBlock) {
+        this.selectedBlock = selectedBlock;
     }
 }

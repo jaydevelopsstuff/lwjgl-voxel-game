@@ -4,6 +4,7 @@ import net.jay.voxelgame.entity.player.ClientPlayer;
 import net.jay.voxelgame.render.Renderer;
 import net.jay.voxelgame.util.Raycast;
 import net.jay.voxelgame.world.World;
+import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.block.Blocks;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
@@ -26,7 +27,9 @@ public class Game {
 
         world = new World();
         player = new ClientPlayer();
+        player.setPos(3, 10, 3);
         renderer = new Renderer();
+
         initGLFW();
         loop();
     }
@@ -36,6 +39,7 @@ public class Game {
 
         while(!window.shouldClose()) {
             processInputs();
+            player.tick();
 
             renderer.render();
 
@@ -45,7 +49,7 @@ public class Game {
     }
 
     private static void processInputs() {
-        player.camera().handleKeyboard(window);
+        player.handleKeyboardInput(window);
         // Bad solution, change this
         player.setPos(player.camera().pos().x, player.camera().pos().y, player.camera().pos().z);
     }
@@ -70,29 +74,39 @@ public class Game {
 
         glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         window.setCursorPosCallback((long window, double x, double y) -> {
-            player.camera().handleCursorPos(x, y);
+            player.handleCursorPosInput(x, y);
         });
 
         window.setMouseButtonCallback((long window, int button, int action, int mods) -> {
             if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_1) {
-                Vector2i chunkCoord = world.getChunkCoords(player.camera().pos().x, player.camera().pos().z);
-                if(chunkCoord == null) return;
-                Vector3i result = Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, player.camera().pos(), player.camera().front(), new Vector3i(), 50);
-                if(result == null) return;
-                world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks()[result.x][result.y][result.z] = Blocks.Air;
+                Vector3i result = world.rayTrace(player.pos(), player.camera().front(), new Vector3i(), 10f);
+                world.setBlock(Blocks.Air, result.x, result.y, result.z);
+                System.out.println(player.pos().x + "," + player.pos().z);
+                System.out.println(result.x + "," + result.y + "," + result.z);
                 renderer.queueMeshUpdate();
             } else if(action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_2) {
                 Vector3i result = new Vector3i();
-                Vector2i chunkCoord = world.getChunkCoords(player.camera().pos().x, player.camera().pos().z);
-                if(chunkCoord == null) return;
-                Raycast.traceRay(world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks(), new Vector3f(chunkCoord.x * 16, 0, chunkCoord.y * 16), true, player.camera().pos(), player.camera().front(), result, 50);
-                world.getLoadedChunks()[chunkCoord.x][chunkCoord.y].blocks()[result.x][result.y][result.z] = Blocks.Dirt;
+                world.rayTrace(player.pos(), player.camera().front(), result, 10f);
+                world.setBlock(Blocks.getBlock(player.selectedBlock()), result.x, result.y, result.z);
                 renderer.queueMeshUpdate();
             }
         });
 
         window.setKeyCallback((long window, int key, int scancode, int action, int mods) -> {
-
+            switch(key) {
+                case GLFW_KEY_1: {
+                    player.setSelectedBlock(Block.Type.Dirt);
+                    break;
+                }
+                case GLFW_KEY_2: {
+                    player.setSelectedBlock(Block.Type.Stone);
+                    break;
+                }
+                case GLFW_KEY_3: {
+                    player.setSelectedBlock(Block.Type.Grass);
+                    break;
+                }
+            }
         });
     }
 

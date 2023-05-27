@@ -6,4 +6,19 @@ public class Blocks {
             Dirt = new DirtBlock(),
             Stone = new StoneBlock(),
             Grass = new GrassBlock();
+
+    public static Block getBlock(Block.Type type) {
+        switch(type) {
+            case Air:
+                return Air;
+            case Dirt:
+                return Dirt;
+            case Stone:
+                return Stone;
+            case Grass:
+                return Grass;
+            default:
+                return null;
+        }
+    }
 }
