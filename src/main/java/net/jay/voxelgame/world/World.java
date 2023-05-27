@@ -68,9 +68,11 @@ public class World {
             rayZ += moveZ;
 
             Chunk chunk = getChunk(rayX, rayZ);
-            if(chunk == null) continue;
+            if(chunk == null)
+                return null;
 
-            if(round(rayY) < 0 || rayY >= World.Height) return null;
+            if(round(rayY) < 0 || rayY >= World.Height)
+                continue;
 
             Block block = blockAt(round(rayX), round(rayY), round(rayZ));
             if(block.type() != Block.Type.Air) {
@@ -104,6 +106,8 @@ public class World {
 
     public Chunk getChunk(double worldX, double worldZ) {
         Vector2i coords = getChunkCoords(worldX, worldZ);
+        //if(worldX < 0 || worldX >= loadedChunks.length || worldZ < 0 || worldZ >= loadedChunks[0].length)
+        //    return null;
         return loadedChunks[coords.x][coords.y];
     }
 
@@ -119,8 +123,10 @@ public class World {
     }
 
     public Vector3f toChunkRelativeCoords(double x, double y, double z) {
-        float xOut = (float)(x < 0 ? (-round(Math.floor(x / 16)) * 16 - Math.abs(x)) % 16 : x % 16);
-        float zOut = (float)(z < 0 ? (-round(Math.floor(z / 16)) * 16 - Math.abs(z)) % 16 : z % 16);
+        float xOut = (float)(x % 16);
+        float zOut = (float)(z % 16);
+        if(xOut < 0) xOut += 16;
+        if(zOut < 0) zOut += 16;
         return new Vector3f(xOut, (float)y, zOut);
     }
 }
