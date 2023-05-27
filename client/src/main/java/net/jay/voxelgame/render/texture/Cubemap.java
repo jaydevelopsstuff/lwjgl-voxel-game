@@ -1,19 +1,17 @@
 package net.jay.voxelgame.render.texture;
 
 import net.jay.voxelgame.render.gl.Mesh;
-import net.jay.voxelgame.render.gl.vertex.PositionVertex;
 import net.jay.voxelgame.util.TextureUtil;
+import net.jay.voxelgame.render.gl.vertex.PositionVertex;
 import org.joml.Vector3f;
 
 import java.io.IOException;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 
 public class Cubemap {

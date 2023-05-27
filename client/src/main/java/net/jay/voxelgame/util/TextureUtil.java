@@ -1,6 +1,5 @@
 package net.jay.voxelgame.util;
 
-import org.joml.Vector2f;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
-import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class TextureUtil {
     public static ImageResult loadImage(String filePath) {
@@ -18,7 +16,7 @@ public class TextureUtil {
         int w;
         int h;
         int comp;
-        try(MemoryStack stack = stackPush()) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer wBuf = stack.mallocInt(1);
             IntBuffer hBuf = stack.mallocInt(1);
             IntBuffer compBuf = stack.mallocInt(1);

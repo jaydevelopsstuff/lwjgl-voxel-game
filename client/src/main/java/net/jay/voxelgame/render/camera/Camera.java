@@ -1,6 +1,5 @@
 package net.jay.voxelgame.render.camera;
 
-import net.jay.voxelgame.Window;
 import net.jay.voxelgame.render.gl.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -8,7 +7,6 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static net.jay.voxelgame.Game.*;
 

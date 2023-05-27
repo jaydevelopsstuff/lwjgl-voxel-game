@@ -1,12 +1,12 @@
 package net.jay.voxelgame.render.gl;
 
 import net.jay.voxelgame.util.FileUtil;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class ShaderProgram {
     private final int programId;
@@ -61,8 +61,7 @@ public class ShaderProgram {
 
     public void destroy() {
         if(programId == 0) return;
-        if(vertexShaderId != 0)
-            glDetachShader(programId, vertexShaderId);
+        if(vertexShaderId != 0) glDetachShader(programId, vertexShaderId);
         if(fragmentShaderId != 0)
             glDetachShader(programId, fragmentShaderId);
         glDeleteProgram(programId);
@@ -70,7 +69,7 @@ public class ShaderProgram {
 
     protected static int createShader(String code, int type) {
         int shaderId = glCreateShader(type);
-        if(shaderId == NULL) {
+        if(shaderId == MemoryUtil.NULL) {
             throw new RuntimeException("Failed to create shader!");
         }
 

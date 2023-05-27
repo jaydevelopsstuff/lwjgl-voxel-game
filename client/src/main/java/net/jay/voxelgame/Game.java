@@ -2,12 +2,9 @@ package net.jay.voxelgame;
 
 import net.jay.voxelgame.entity.player.ClientPlayer;
 import net.jay.voxelgame.render.Renderer;
-import net.jay.voxelgame.util.Raycast;
 import net.jay.voxelgame.world.World;
 import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.block.Blocks;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -57,7 +54,7 @@ public class Game {
     private static void initGLFW() {
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
+        // Initialize  Most GLFW functions will not work before doing this.
         if(!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 

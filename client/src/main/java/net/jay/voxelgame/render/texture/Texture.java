@@ -1,19 +1,11 @@
 package net.jay.voxelgame.render.texture;
 
-import net.jay.voxelgame.util.FileUtil;
 import net.jay.voxelgame.util.TextureUtil;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
-import static org.lwjgl.stb.STBImage.*;
+import static org.lwjgl.stb.STBImage.stbi_image_free;
 
 public class Texture {
     private final int id;

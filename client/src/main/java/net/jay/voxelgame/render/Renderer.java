@@ -1,6 +1,9 @@
 package net.jay.voxelgame.render;
 
 import static net.jay.voxelgame.Game.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+
 import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.render.gl.ShaderProgram;
 import net.jay.voxelgame.render.gl.vertex.PositionVertex;
@@ -11,16 +14,11 @@ import net.jay.voxelgame.render.ui.GuiAtlases;
 import net.jay.voxelgame.render.ui.GuiRenderer;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
 
 public class Renderer {
     private GuiRenderer guiRenderer;

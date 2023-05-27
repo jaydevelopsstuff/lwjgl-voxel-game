@@ -6,12 +6,11 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
     private long handle;
@@ -22,8 +21,8 @@ public class Window {
     }
 
     public void init() {
-        handle = glfwCreateWindow(800, 800, title, NULL, NULL);
-        if(handle == NULL) throw new RuntimeException("Failed to create the GLFW window");
+        handle = glfwCreateWindow(800, 800, title, MemoryUtil.NULL, MemoryUtil.NULL);
+        if(handle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         setKeyCallback((window, key, scancode, action, mods) -> {
@@ -32,7 +31,7 @@ public class Window {
         });
 
         // Get the thread stack and push a new frame
-        try(MemoryStack stack = stackPush()) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 

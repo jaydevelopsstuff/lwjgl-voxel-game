@@ -1,9 +1,9 @@
 package net.jay.voxelgame.entity.player;
 
-import net.jay.voxelgame.Game;
 import net.jay.voxelgame.util.MathUtil;
 import net.jay.voxelgame.world.World;
 import net.jay.voxelgame.world.block.Block;
+import net.jay.voxelgame.Game;
 import org.joml.Vector3f;
 
 public class Entity {

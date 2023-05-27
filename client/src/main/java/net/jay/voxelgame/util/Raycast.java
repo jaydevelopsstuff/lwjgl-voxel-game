@@ -4,14 +4,12 @@ import net.jay.voxelgame.world.block.Block;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import static net.jay.voxelgame.util.MathUtil.*;
-
 // TODO: Raycast through chunks
 public class Raycast {
     public static Vector3i traceRay(Block[][][] blocks, Vector3f blocksRelativeStart, boolean relativeResult, Vector3f origin, Vector3f direction, Vector3i beforeIntercept, float maxDistance) {
-        int relativeStartX = round(blocksRelativeStart.x);
-        int relativeStartY = round(blocksRelativeStart.y);
-        int relativeStartZ = round(blocksRelativeStart.z);
+        int relativeStartX = MathUtil.round(blocksRelativeStart.x);
+        int relativeStartY = MathUtil.round(blocksRelativeStart.y);
+        int relativeStartZ = MathUtil.round(blocksRelativeStart.z);
 
         double moveX = direction.x / 6;
         double moveY = direction.y / 6;
@@ -36,9 +34,9 @@ public class Raycast {
             if(rayX < 0 || rayY < 0 || rayZ < 0)
                 return null;
 
-            int roundedX = round(rayX);
-            int roundedY = round(rayY);
-            int roundedZ = round(rayZ);
+            int roundedX = MathUtil.round(rayX);
+            int roundedY = MathUtil.round(rayY);
+            int roundedZ = MathUtil.round(rayZ);
 
             if(roundedX - relativeStartX >= 16 || roundedY - relativeStartY >= 64 || roundedZ - relativeStartZ >= 16)
                 return null;
@@ -46,14 +44,14 @@ public class Raycast {
             Block block = blocks[roundedX - relativeStartX][roundedY - relativeStartY][roundedZ - relativeStartZ];
             if(block.type() != Block.Type.Air) {
                 if(relativeResult) {
-                    beforeIntercept.x = round(prevRayX) - relativeStartX;
-                    beforeIntercept.y = round(prevRayY) - relativeStartY;
-                    beforeIntercept.z = round(prevRayZ) - relativeStartZ;
+                    beforeIntercept.x = MathUtil.round(prevRayX) - relativeStartX;
+                    beforeIntercept.y = MathUtil.round(prevRayY) - relativeStartY;
+                    beforeIntercept.z = MathUtil.round(prevRayZ) - relativeStartZ;
                     return new Vector3i(roundedX - relativeStartX, roundedY - relativeStartY, roundedZ - relativeStartZ);
                 } else {
-                    beforeIntercept.x = round(prevRayX);
-                    beforeIntercept.y = round(prevRayY);
-                    beforeIntercept.z = round(prevRayZ);
+                    beforeIntercept.x = MathUtil.round(prevRayX);
+                    beforeIntercept.y = MathUtil.round(prevRayY);
+                    beforeIntercept.z = MathUtil.round(prevRayZ);
                     return new Vector3i(roundedX, roundedY, roundedZ);
                 }
             }

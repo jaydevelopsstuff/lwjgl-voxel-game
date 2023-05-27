@@ -4,7 +4,6 @@ import net.jay.voxelgame.Window;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class FreeCamera extends Camera {
     protected float yaw = -90f;

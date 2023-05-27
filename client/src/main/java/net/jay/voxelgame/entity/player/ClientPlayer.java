@@ -1,16 +1,11 @@
 package net.jay.voxelgame.entity.player;
 
-import net.jay.voxelgame.Game;
+import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.Window;
 import net.jay.voxelgame.render.camera.Camera;
-import net.jay.voxelgame.util.MathUtil;
-import net.jay.voxelgame.world.Chunk;
-import net.jay.voxelgame.world.block.Block;
-import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class ClientPlayer extends Player {
     private static final float movementSpeed = 0.01f;
