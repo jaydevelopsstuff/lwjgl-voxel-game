@@ -106,27 +106,25 @@ public class World {
 
     public Chunk getChunk(double worldX, double worldZ) {
         Vector2i coords = getChunkCoords(worldX, worldZ);
-        //if(worldX < 0 || worldX >= loadedChunks.length || worldZ < 0 || worldZ >= loadedChunks[0].length)
-        //    return null;
         return loadedChunks[coords.x][coords.y];
     }
 
     public Vector2i getChunkCoords(double worldX, double worldZ) {
-        int chunkX;
-        int chunkZ;
-        chunkX = round(Math.floor(worldX / 16) + loadedChunks.length / 2);
-        chunkZ = round(Math.floor(worldZ / 16) + loadedChunks[0].length / 2);
+        int chunkX = round(Math.floor(worldX / 16) + loadedChunks.length / 2);
+        int chunkZ = round(Math.floor(worldZ / 16) + loadedChunks[0].length / 2);
         if(chunkX < 0 || chunkX > loadedChunks.length - 1 || chunkZ < 0 || chunkZ > loadedChunks[0].length - 1)
             return null;
 
          return new Vector2i(chunkX, chunkZ);
     }
 
+    public double toChunkRelative(double coord) {
+        double relative = coord % 16;
+        if(relative < 0) relative += 16;
+        return relative;
+    }
+
     public Vector3f toChunkRelativeCoords(double x, double y, double z) {
-        float xOut = (float)(x % 16);
-        float zOut = (float)(z % 16);
-        if(xOut < 0) xOut += 16;
-        if(zOut < 0) zOut += 16;
-        return new Vector3f(xOut, (float)y, zOut);
+        return new Vector3f((float)toChunkRelative(x), (float)y, (float)toChunkRelative(z));
     }
 }
