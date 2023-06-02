@@ -27,8 +27,8 @@ public class Mesh<T extends Vertex> {
     private int ebo;
 
     public Mesh(boolean useEbo) {
-        this.vertices = new MyArrayList<>();
-        this.indices = new MyArrayList<>();
+        this.vertices = new MyArrayList<>(4096, 512);
+        this.indices = new MyArrayList<>(4096, 512);
         this.useEbo = useEbo;
     }
 
