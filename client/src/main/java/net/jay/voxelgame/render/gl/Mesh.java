@@ -1,6 +1,7 @@
 package net.jay.voxelgame.render.gl;
 
 import net.jay.voxelgame.render.gl.vertex.Vertex;
+import net.jay.voxelgame.util.DLList;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -16,8 +17,8 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Mesh<T extends Vertex> {
-    private final List<T> vertices;
-    private final List<Integer> indices;
+    private final DLList<T> vertices;
+    private final DLList<Integer> indices;
     private final boolean useEbo;
 
     private int vao;
@@ -25,8 +26,8 @@ public class Mesh<T extends Vertex> {
     private int ebo;
 
     public Mesh(boolean useEbo) {
-        this.vertices = new ArrayList<>();
-        this.indices = new ArrayList<>();
+        this.vertices = new DLList<>();
+        this.indices = new DLList<>();
         this.useEbo = useEbo;
     }
 
@@ -35,7 +36,9 @@ public class Mesh<T extends Vertex> {
     }
 
     public void addVertices(T... vertices) {
-        this.vertices.addAll(Arrays.asList(vertices));
+        for(T vertex : vertices) {
+            this.vertices.add(vertex);
+        }
     }
 
     public void addIndices(int... indices) {
@@ -52,7 +55,12 @@ public class Mesh<T extends Vertex> {
         glBindVertexArray(vao);
 
         float[] rawVertices = toRawVertices();
-        int[] rawIndices = indices.stream().mapToInt(Integer::intValue).toArray();
+        int[] rawIndices = new int[indices.size()];
+        int i = 0;
+        for(Integer index : indices) {
+            rawIndices[i] = index;
+            i++;
+        }
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, rawVertices, GL_STATIC_DRAW);

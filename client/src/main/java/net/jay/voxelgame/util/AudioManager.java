@@ -13,7 +13,7 @@ public class AudioManager {
     private Clip dirtBreak;
     private Clip stoneBreak;
 
-    private final Queue<Integer> audioQueue = new LinkedList<>();
+    private final DLList<Integer> audioQueue = new DLList<>();
     private final boolean running = true;
 
     public void init() throws LineUnavailableException, UnsupportedAudioFileException, IOException {
@@ -25,12 +25,13 @@ public class AudioManager {
     }
 
     public void queueSound(int sound) {
-        audioQueue.offer(sound);
+        audioQueue.add(sound);
     }
 
     private void queueLoop() {
         while(running) {
-            Integer audioId = audioQueue.poll();
+            Integer audioId = audioQueue.get(0);
+            audioQueue.remove(0);
 
             if(audioId != null) {
                 if(audioId == 0) {
