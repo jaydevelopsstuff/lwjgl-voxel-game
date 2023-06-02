@@ -36,7 +36,7 @@ public class Window {
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            glfwSetWindowSize(handle, vidmode.width() / 2, vidmode.height());
+            //glfwSetWindowSize(handle, vidmode.width() / 2, vidmode.height());
 
             // Get the window size passed to glfwCreateWindow
             glfwGetWindowSize(handle, pWidth, pHeight);

@@ -7,6 +7,7 @@ import net.jay.voxelgame.entity.ClientPlayer;
 import net.jay.voxelgame.network.NetworkManager;
 import net.jay.voxelgame.render.Renderer;
 import net.jay.voxelgame.util.AudioManager;
+import net.jay.voxelgame.util.MyArrayList;
 import net.jay.voxelgame.world.World;
 import net.jay.voxelgame.world.block.Blocks;
 import org.joml.Vector3i;

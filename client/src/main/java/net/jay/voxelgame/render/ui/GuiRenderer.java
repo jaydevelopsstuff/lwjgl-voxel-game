@@ -4,6 +4,7 @@ import net.jay.voxelgame.render.gl.ShaderProgram;
 import net.jay.voxelgame.render.ui.element.GuiElement;
 import net.jay.voxelgame.render.ui.element.Instructions;
 import net.jay.voxelgame.util.DLList;
+import net.jay.voxelgame.util.MyArrayList;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
@@ -15,7 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class GuiRenderer {
-    private final DLList<GuiElement> elements = new DLList<>();
+    private final MyArrayList<GuiElement> elements = new MyArrayList<>();
 
     public void init() {
         //elements.add(new Hotbar());

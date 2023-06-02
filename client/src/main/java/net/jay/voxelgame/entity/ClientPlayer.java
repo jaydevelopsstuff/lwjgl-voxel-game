@@ -33,7 +33,7 @@ public class ClientPlayer extends CEntity {
         tickMovement();
 
         if(!onGround) {
-           velocity().add(0, -0.002f, 0);
+           velocity().add(0, -0.003f, 0);
         } else {
             velocity().sub(0, velocity().y, 0);
         }

@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
 }
 
@@ -11,4 +12,10 @@ repositories {
 
 dependencies {
     implementation project(":common")
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.jay.voxelgame.server.Main'
+    }
 }

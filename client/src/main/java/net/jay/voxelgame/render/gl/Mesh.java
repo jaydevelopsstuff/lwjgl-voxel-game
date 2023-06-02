@@ -2,6 +2,7 @@ package net.jay.voxelgame.render.gl;
 
 import net.jay.voxelgame.render.gl.vertex.Vertex;
 import net.jay.voxelgame.util.DLList;
+import net.jay.voxelgame.util.MyArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -17,8 +18,8 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Mesh<T extends Vertex> {
-    private final DLList<T> vertices;
-    private final DLList<Integer> indices;
+    private final MyArrayList<T> vertices;
+    private final MyArrayList<Integer> indices;
     private final boolean useEbo;
 
     private int vao;
@@ -26,8 +27,8 @@ public class Mesh<T extends Vertex> {
     private int ebo;
 
     public Mesh(boolean useEbo) {
-        this.vertices = new DLList<>();
-        this.indices = new DLList<>();
+        this.vertices = new MyArrayList<>();
+        this.indices = new MyArrayList<>();
         this.useEbo = useEbo;
     }
 
