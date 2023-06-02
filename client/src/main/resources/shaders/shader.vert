@@ -4,7 +4,6 @@ layout(location = 1) in vec2 texCoordIn;
 
 out vec2 texCoord;
 
-uniform mat4 transformationMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 

@@ -4,6 +4,7 @@ import net.jay.voxelgame.render.gl.ShaderProgram;
 import net.jay.voxelgame.render.ui.element.GuiElement;
 import net.jay.voxelgame.render.ui.element.Hotbar;
 import net.jay.voxelgame.render.ui.element.HotbarSelection;
+import net.jay.voxelgame.render.ui.element.Instructions;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
@@ -18,8 +19,9 @@ public class GuiRenderer {
     private final List<GuiElement> elements = new ArrayList<>();
 
     public void init() {
-        elements.add(new Hotbar());
-        elements.add(new HotbarSelection());
+        //elements.add(new Hotbar());
+        //elements.add(new HotbarSelection());
+        elements.add(new Instructions());
     }
 
     public void render(ShaderProgram textureShader) {

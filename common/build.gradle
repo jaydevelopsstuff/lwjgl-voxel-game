@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group = 'net.jay'
@@ -10,5 +10,5 @@ repositories {
 }
 
 dependencies {
-    implementation project(":common")
+    implementation 'org.joml:joml:1.10.5'
 }

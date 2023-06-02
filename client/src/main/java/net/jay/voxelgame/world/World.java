@@ -1,5 +1,7 @@
 package net.jay.voxelgame.world;
 
+import net.jay.voxelgame.Game;
+import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.render.gl.vertex.TextureVertex;
 import net.jay.voxelgame.util.MathUtil;
@@ -17,6 +19,10 @@ public class World {
 
     public World() {
         this.loadedChunks = new Chunk[8][8];
+        resetChunks();
+    }
+
+    public void resetChunks() {
         for(Chunk[] chunks : loadedChunks) {
             for(int i = 0; i < chunks.length; i++) {
                 chunks[i] = new Chunk();
@@ -75,11 +81,18 @@ public class World {
                 continue;
 
             Block block = blockAt(round(rayX), round(rayY), round(rayZ));
-            if(block.type() != Block.Type.Air) {
-                beforeIntercept.x = round(prevRayX);
-                beforeIntercept.y = round(prevRayY);
-                beforeIntercept.z = round(prevRayZ);
-                System.out.println(getChunkCoords(rayX, rayZ));
+            if(block.type() != BlockType.Air) {
+                if(beforeIntercept != null) {
+                    beforeIntercept.x = round(prevRayX);
+                    beforeIntercept.y = round(prevRayY);
+                    beforeIntercept.z = round(prevRayZ);
+                }
+                if(beforeIntercept == null) {
+                    if(block.type() == BlockType.Dirt || block.type() == BlockType.Grass)
+                        Game.audioManager.queueSound(0);
+                    else if(block.type() == BlockType.Stone)
+                        Game.audioManager.queueSound(1);
+                }
                 return new Vector3i(round(rayX), round(rayY), round(rayZ));
             }
 

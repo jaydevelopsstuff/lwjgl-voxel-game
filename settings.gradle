@@ -1,4 +1,5 @@
 rootProject.name = 'voxel-game'
 include 'client'
 include 'server'
+include 'common'
 

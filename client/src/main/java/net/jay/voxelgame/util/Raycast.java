@@ -1,5 +1,6 @@
 package net.jay.voxelgame.util;
 
+import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.world.block.Block;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -42,7 +43,7 @@ public class Raycast {
                 return null;
 
             Block block = blocks[roundedX - relativeStartX][roundedY - relativeStartY][roundedZ - relativeStartZ];
-            if(block.type() != Block.Type.Air) {
+            if(block.type() != BlockType.Air) {
                 if(relativeResult) {
                     beforeIntercept.x = MathUtil.round(prevRayX) - relativeStartX;
                     beforeIntercept.y = MathUtil.round(prevRayY) - relativeStartY;

@@ -1,5 +1,7 @@
 package net.jay.voxelgame.world.block;
 
+import net.jay.voxelgame.api.block.BlockType;
+
 public class Blocks {
     public static final Block
             Air = new AirBlock(),
@@ -7,7 +9,7 @@ public class Blocks {
             Stone = new StoneBlock(),
             Grass = new GrassBlock();
 
-    public static Block getBlock(Block.Type type) {
+    public static Block getBlock(BlockType type) {
         switch(type) {
             case Air:
                 return Air;

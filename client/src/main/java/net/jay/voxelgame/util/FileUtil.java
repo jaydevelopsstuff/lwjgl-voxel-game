@@ -32,6 +32,10 @@ public class FileUtil {
         }
     }
 
+    public static InputStream getResourceInputStream(String fileName) {
+        return ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+    }
+
     public static ByteBuffer resourceToByteBuffer(String filePath, int bufferSize) throws IOException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         ReadableByteChannel channel = Channels.newChannel(classLoader.getResourceAsStream(filePath));

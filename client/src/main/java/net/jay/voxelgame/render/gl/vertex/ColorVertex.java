@@ -4,14 +4,15 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public class TextureVertex implements Vertex {
+public class ColorVertex implements Vertex {
     private final Vector3f position;
-    private final Vector2f uv;
+    private final Vector4f color;
 
-    public TextureVertex(Vector3f position, Vector2f uv) {
+    public ColorVertex(Vector3f position, Vector4f color) {
         this.position = position;
-        this.uv = uv;
+        this.color = color;
     }
+
 
     @Override
     public Vector3f position() {
@@ -20,26 +21,26 @@ public class TextureVertex implements Vertex {
 
     @Override
     public Vector4f color() {
-        return null;
+        return color;
     }
 
     @Override
     public Vector2f uv() {
-        return uv;
+        return null;
     }
 
     @Override
     public int stride() {
-        return 5;
+        return 7;
     }
 
     @Override
     public boolean hasColor() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean hasUV() {
-        return true;
+        return false;
     }
 }

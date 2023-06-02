@@ -1,17 +1,18 @@
-package net.jay.voxelgame.entity.player;
+package net.jay.voxelgame.entity;
 
-import net.jay.voxelgame.world.block.Block;
+import net.jay.voxelgame.Game;
+import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.Window;
 import net.jay.voxelgame.render.camera.Camera;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class ClientPlayer extends Player {
+public class ClientPlayer extends CEntity {
     private static final float movementSpeed = 0.01f;
 
     private final Camera camera;
-    private Block.Type selectedBlock;
+    private BlockType selectedBlock;
 
     private boolean wPressed, sPressed, aPressed, dPressed, spacePressed;
 
@@ -22,7 +23,7 @@ public class ClientPlayer extends Player {
     public ClientPlayer() {
         super();
         this.camera = new Camera();
-        this.selectedBlock = Block.Type.Dirt;
+        this.selectedBlock = BlockType.Dirt;
         setYaw(-90f);
     }
 
@@ -36,6 +37,9 @@ public class ClientPlayer extends Player {
         } else {
             velocity().sub(0, velocity().y, 0);
         }
+
+        if(!pos().equals(prevPos()))
+            Game.network().sendPosition(pos().x, pos().y, pos().z);
     }
 
     private void tickMovement() {
@@ -140,11 +144,11 @@ public class ClientPlayer extends Player {
         camera.setPos(x, y, z);
     }
 
-    public Block.Type selectedBlock() {
+    public BlockType selectedBlock() {
         return selectedBlock;
     }
 
-    public void setSelectedBlock(Block.Type selectedBlock) {
+    public void setSelectedBlock(BlockType selectedBlock) {
         this.selectedBlock = selectedBlock;
     }
 }

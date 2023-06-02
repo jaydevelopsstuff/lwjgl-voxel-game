@@ -3,6 +3,7 @@ package net.jay.voxelgame.render.gl;
 import net.jay.voxelgame.render.gl.vertex.Vertex;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,10 +64,28 @@ public class Mesh<T extends Vertex> {
 
         glVertexAttribPointer(0, 3, GL_FLOAT, false, vertices.get(0).stride() * 4, 0);
         glEnableVertexAttribArray(0);
-        if(vertices.get(0).stride() <= 3)
-            return;
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, vertices.get(0).stride() * 4, 3 * 4);
-        glEnableVertexAttribArray(1);
+
+        boolean hasUV = vertices.get(0).hasUV();
+        boolean hasColor = vertices.get(0).hasColor();
+        int uvIndex = -1;
+        int colorIndex = -1;
+        if(hasUV && hasColor) {
+            uvIndex = 1;
+            colorIndex = 2;
+        } else if(hasUV) {
+            uvIndex = 1;
+        } else {
+            colorIndex = 1;
+        }
+
+        if(hasUV) {
+            glVertexAttribPointer(uvIndex, 2, GL_FLOAT, false, vertices.get(0).stride() * 4, 3 * 4);
+            glEnableVertexAttribArray(uvIndex);
+        }
+        if(hasColor) {
+            glVertexAttribPointer(colorIndex, 4, GL_FLOAT, false, vertices.get(0).stride() * 4, hasUV ? 5 * 4 : 3 * 4);
+            glEnableVertexAttribArray(colorIndex);
+        }
     }
 
     public void bindVAO() {
@@ -74,19 +93,34 @@ public class Mesh<T extends Vertex> {
     }
 
     private float[] toRawVertices() {
+        boolean hasUV = vertices.get(0).hasUV();
+        boolean hasColor = vertices.get(0).hasColor();
         float[] rawVertices = new float[vertices.size() * vertices.get(0).stride()];
         for(int i = 0; i < vertices.size(); i++) {
             T vertex = vertices.get(i);
             Vector3f position = vertex.position();
             Vector2f uv = vertex.uv();
+            Vector4f color = vertex.color();
             int rawIndex = i * vertex.stride();
 
             rawVertices[rawIndex] = position.x;
             rawVertices[rawIndex + 1] = position.y;
             rawVertices[rawIndex + 2] = position.z;
-            if(uv != null && vertex.stride() >= 5) {
+            if(hasUV && hasColor) {
                 rawVertices[rawIndex + 3] = uv.x;
                 rawVertices[rawIndex + 4] = uv.y;
+                rawVertices[rawIndex + 5] = color.x;
+                rawVertices[rawIndex + 6] = color.y;
+                rawVertices[rawIndex + 7] = color.z;
+                rawVertices[rawIndex + 8] = color.w;
+            } else if(hasUV) {
+                rawVertices[rawIndex + 3] = uv.x;
+                rawVertices[rawIndex + 4] = uv.y;
+            } else if(hasColor) {
+                rawVertices[rawIndex + 3] = color.x;
+                rawVertices[rawIndex + 4] = color.y;
+                rawVertices[rawIndex + 5] = color.z;
+                rawVertices[rawIndex + 6] = color.w;
             }
         }
         return rawVertices;

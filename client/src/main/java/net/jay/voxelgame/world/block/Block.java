@@ -1,5 +1,6 @@
 package net.jay.voxelgame.world.block;
 
+import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.render.gl.ShaderProgram;
 import net.jay.voxelgame.render.gl.vertex.TextureVertex;
@@ -7,7 +8,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Block {
-    private final Type type;
+    private final BlockType type;
 
     private final Vector2f[] texCoordsUp;
     private final Vector2f[] texCoordsDown;
@@ -16,7 +17,7 @@ public class Block {
     private final Vector2f[] texCoordsSouth;
     private final Vector2f[] texCoordsWest;
 
-    public Block(Type type, float xStart, float xEnd, float yStart, float yEnd) {
+    public Block(BlockType type, float xStart, float xEnd, float yStart, float yEnd) {
         this.type = type;
         this.texCoordsUp = new Vector2f[] {
                 new Vector2f(xStart, yEnd), new Vector2f(xEnd, yEnd),
@@ -44,7 +45,7 @@ public class Block {
         };
     }
 
-    public Block(Type type, Vector2f[] texCoordsUp, Vector2f[] texCoordsDown, Vector2f[] texCoordsNorth, Vector2f[] texCoordsEast, Vector2f[] texCoordsSouth, Vector2f[] texCoordsWest) {
+    public Block(BlockType type, Vector2f[] texCoordsUp, Vector2f[] texCoordsDown, Vector2f[] texCoordsNorth, Vector2f[] texCoordsEast, Vector2f[] texCoordsSouth, Vector2f[] texCoordsWest) {
         this.type = type;
         this.texCoordsUp = texCoordsUp;
         this.texCoordsDown = texCoordsDown;
@@ -156,14 +157,7 @@ public class Block {
         faceDataWest(x, y, z, mesh);
     }
 
-    public Type type() {
+    public BlockType type() {
         return type;
-    }
-
-    public enum Type {
-        Air,
-        Dirt,
-        Grass,
-        Stone
     }
 }

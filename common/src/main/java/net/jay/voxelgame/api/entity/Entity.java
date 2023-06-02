@@ -1,9 +1,5 @@
-package net.jay.voxelgame.entity.player;
+package net.jay.voxelgame.api.entity;
 
-import net.jay.voxelgame.util.MathUtil;
-import net.jay.voxelgame.world.World;
-import net.jay.voxelgame.world.block.Block;
-import net.jay.voxelgame.Game;
 import org.joml.Vector3f;
 
 public class Entity {
@@ -20,9 +16,6 @@ public class Entity {
 
     public void tick() {
         setPos(pos.x + velocity.x, pos.y + velocity.y, pos.z + velocity.z);
-
-        if(MathUtil.round(pos.y - 2) >= World.Height) onGround = false;
-        else onGround = Game.world().blockAt(MathUtil.round(pos.x), MathUtil.round(pos.y - 2f), MathUtil.round(pos.z)).type() != Block.Type.Air;
     }
 
     public Vector3f pos() {

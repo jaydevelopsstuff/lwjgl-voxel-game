@@ -1,5 +1,6 @@
 package net.jay.voxelgame.world.block;
 
+import net.jay.voxelgame.api.block.BlockType;
 import org.joml.Vector2f;
 
 public class GrassBlock extends Block {
@@ -42,6 +43,6 @@ public class GrassBlock extends Block {
     };
 
     public GrassBlock() {
-        super(Type.Grass, texCoordsUp, texCoordsDown, texCoordsNorth, texCoordsEast, texCoordsSouth, texCoordsWest);
+        super(BlockType.Grass, texCoordsUp, texCoordsDown, texCoordsNorth, texCoordsEast, texCoordsSouth, texCoordsWest);
     }
 }
