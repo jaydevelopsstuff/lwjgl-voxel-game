@@ -6,9 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 public class SPlayer extends Entity {
-    private DataInputStream in;
-    private DataOutputStream out;
-    private int id;
+    private final DataInputStream in;
+    private final DataOutputStream out;
+    private final int id;
     private float x, y, z;
 
     public SPlayer(DataInputStream in, DataOutputStream out, int id) {

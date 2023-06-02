@@ -12,8 +12,8 @@ public class AudioManager {
     private Clip dirtBreak;
     private Clip stoneBreak;
 
-    private Queue<Integer> audioQueue = new LinkedList<>();
-    private boolean running = true;
+    private final Queue<Integer> audioQueue = new LinkedList<>();
+    private final boolean running = true;
 
     public void init() throws LineUnavailableException, UnsupportedAudioFileException, IOException {
         this.dirtBreak = AudioSystem.getClip();

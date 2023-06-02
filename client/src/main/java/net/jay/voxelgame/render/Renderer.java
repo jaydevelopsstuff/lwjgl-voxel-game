@@ -1,10 +1,5 @@
 package net.jay.voxelgame.render;
 
-import static net.jay.voxelgame.Game.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
-
-import net.jay.voxelgame.Game;
 import net.jay.voxelgame.api.entity.SPlayer;
 import net.jay.voxelgame.render.gl.Mesh;
 import net.jay.voxelgame.render.gl.ShaderProgram;
@@ -24,6 +19,10 @@ import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
+
+import static net.jay.voxelgame.Game.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class Renderer {
     private GuiRenderer guiRenderer;

@@ -1,8 +1,8 @@
 package net.jay.voxelgame.entity;
 
 import net.jay.voxelgame.Game;
-import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.Window;
+import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.render.camera.Camera;
 import org.joml.Vector3f;
 

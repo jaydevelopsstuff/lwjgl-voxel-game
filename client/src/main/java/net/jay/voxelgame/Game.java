@@ -7,15 +7,11 @@ import net.jay.voxelgame.entity.ClientPlayer;
 import net.jay.voxelgame.network.NetworkManager;
 import net.jay.voxelgame.render.Renderer;
 import net.jay.voxelgame.util.AudioManager;
-import net.jay.voxelgame.util.FileUtil;
 import net.jay.voxelgame.world.World;
-import net.jay.voxelgame.world.block.Block;
 import net.jay.voxelgame.world.block.Blocks;
 import org.joml.Vector3i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;

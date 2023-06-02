@@ -7,8 +7,8 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
 
+import static net.jay.voxelgame.Game.window;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
-import static net.jay.voxelgame.Game.*;
 
 public class Camera {
 

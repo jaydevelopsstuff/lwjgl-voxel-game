@@ -2,8 +2,6 @@ package net.jay.voxelgame.render.ui;
 
 import net.jay.voxelgame.render.gl.ShaderProgram;
 import net.jay.voxelgame.render.ui.element.GuiElement;
-import net.jay.voxelgame.render.ui.element.Hotbar;
-import net.jay.voxelgame.render.ui.element.HotbarSelection;
 import net.jay.voxelgame.render.ui.element.Instructions;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;

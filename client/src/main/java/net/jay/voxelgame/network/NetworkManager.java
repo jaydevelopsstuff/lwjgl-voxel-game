@@ -1,7 +1,6 @@
 package net.jay.voxelgame.network;
 
 import net.jay.voxelgame.Game;
-import net.jay.voxelgame.api.block.BlockType;
 import net.jay.voxelgame.api.entity.SPlayer;
 import net.jay.voxelgame.api.packet.*;
 import net.jay.voxelgame.world.block.Blocks;

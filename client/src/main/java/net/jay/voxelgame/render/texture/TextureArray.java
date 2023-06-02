@@ -5,7 +5,6 @@ import net.jay.voxelgame.util.TextureUtil;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
-import static org.lwjgl.system.MemoryUtil.memSlice;
 
 public class TextureArray {
     private final int id;

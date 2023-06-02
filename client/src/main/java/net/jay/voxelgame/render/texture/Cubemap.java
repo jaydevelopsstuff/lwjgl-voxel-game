@@ -1,8 +1,8 @@
 package net.jay.voxelgame.render.texture;
 
 import net.jay.voxelgame.render.gl.Mesh;
-import net.jay.voxelgame.util.TextureUtil;
 import net.jay.voxelgame.render.gl.vertex.PositionVertex;
+import net.jay.voxelgame.util.TextureUtil;
 import org.joml.Vector3f;
 
 import java.io.IOException;

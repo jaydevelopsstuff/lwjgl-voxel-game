@@ -8,7 +8,7 @@ import net.jay.voxelgame.world.World;
 import org.joml.Vector3f;
 
 public class CEntity extends Entity {
-    private Vector3f prevPos = new Vector3f();
+    private final Vector3f prevPos = new Vector3f();
 
     @Override
     public void tick() {
