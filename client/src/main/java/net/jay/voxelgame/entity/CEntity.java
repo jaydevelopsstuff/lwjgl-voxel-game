@@ -11,9 +11,9 @@ public class CEntity extends Entity {
     private final Vector3f prevPos = new Vector3f();
 
     @Override
-    public void tick() {
+    public void tick(double delta) {
         prevPos.set(pos());
-        super.tick();
+        super.tick(delta);
 
         if(MathUtil.round(pos().y - 2) >= World.Height) onGround = false;
         else onGround = Game.world().blockAt(MathUtil.round(pos().x), MathUtil.round(pos().y - 2f), MathUtil.round(pos().z)).type() != BlockType.Air;

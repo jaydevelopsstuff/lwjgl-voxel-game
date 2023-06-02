@@ -9,7 +9,7 @@ import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ClientPlayer extends CEntity {
-    private static final float movementSpeed = 0.01f;
+    private static final float movementSpeed = 1.1f;
 
     private final Camera camera;
     private BlockType selectedBlock;
@@ -27,13 +27,13 @@ public class ClientPlayer extends CEntity {
         setYaw(-90f);
     }
 
-    public void tick() {
-        super.tick();
+    public void tick(double delta) {
+        super.tick(delta);
 
         tickMovement();
 
         if(!onGround) {
-           velocity().add(0, -0.003f, 0);
+           velocity().add(0, -0.14f, 0);
         } else {
             velocity().sub(0, velocity().y, 0);
         }
@@ -61,7 +61,7 @@ public class ClientPlayer extends CEntity {
             velocity().add(new Vector3f(front).cross(up).normalize().mul(movementSpeed));
         }
         if(spacePressed && onGround) {
-            velocity().add(new Vector3f(up).mul(0.1f));
+            velocity().add(new Vector3f(0, 1, 0).mul(5f));
             onGround = false;
         }
     }

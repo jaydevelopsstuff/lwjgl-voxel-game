@@ -31,6 +31,7 @@ public class Game {
     private static World world;
     private static Renderer renderer;
     public static AudioManager audioManager;
+    private static double delta;
 
     public static void start() {
         System.out.println("Starting...");
@@ -57,13 +58,15 @@ public class Game {
         renderer.init();
 
         while(!window.shouldClose()) {
+            double previousFrameTime = (System.nanoTime() / 1000000000D);
             processInputs();
-            player.tick();
+            player.tick(delta);
 
             renderer.render();
 
             glfwSwapBuffers(window.handle()); // swap the color buffers
             glfwPollEvents();
+            delta = (System.nanoTime() / 1000000000D) - previousFrameTime;
         }
     }
 

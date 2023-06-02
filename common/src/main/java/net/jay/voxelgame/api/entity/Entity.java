@@ -14,8 +14,8 @@ public class Entity {
         this.velocity = new Vector3f();
     }
 
-    public void tick() {
-        setPos(pos.x + velocity.x, pos.y + velocity.y, pos.z + velocity.z);
+    public void tick(double delta) {
+        setPos(pos.x + velocity.x * delta, pos.y + velocity.y * delta, pos.z + velocity.z * delta);
     }
 
     public Vector3f pos() {
