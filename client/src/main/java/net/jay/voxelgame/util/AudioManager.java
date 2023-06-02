@@ -4,6 +4,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -18,8 +19,8 @@ public class AudioManager {
     public void init() throws LineUnavailableException, UnsupportedAudioFileException, IOException {
         this.dirtBreak = AudioSystem.getClip();
         this.stoneBreak = AudioSystem.getClip();
-        this.dirtBreak.open(AudioSystem.getAudioInputStream(FileUtil.getResourceInputStream("assets/sounds/dirtbreak.wav")));
-        this.stoneBreak.open(AudioSystem.getAudioInputStream(FileUtil.getResourceInputStream("assets/sounds/stonebreak.wav")));
+        this.dirtBreak.open(AudioSystem.getAudioInputStream(new BufferedInputStream(FileUtil.getResourceInputStream("assets/sounds/dirtbreak.wav"))));
+        this.stoneBreak.open(AudioSystem.getAudioInputStream(new BufferedInputStream(FileUtil.getResourceInputStream("assets/sounds/stonebreak.wav"))));
         new Thread(this::queueLoop).start();
     }
 
